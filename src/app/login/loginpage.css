@@ -2,15 +2,98 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh;
+    min-height: 100vh;
+    padding: 40px;
+    background-color: #070F2B;
+    box-sizing: border-box;
 }
 
 .login {
-    width: 350px;
-    height: 500px;
-    border: 2px solid lightblue;
-  }
+    width: 800px; /* Much wider for desktop */
+    height: 1100px; /* Taller for desktop */
+    text-align: center;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 40px; /* Increase space between elements */
+    border-radius: 15px;
+    padding: 30px;
+    background-color: rgba(0, 0, 0, 0.3);
+}
+
+.all-buttons-div {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 30px; /* Larger gap for better spacing */
+    margin-top: 100px;
+}
+
+.login-box {
+    width: 90%; /* Wider button containers */
+    height: 100px; /* Taller buttons */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 12px;
+    color: white;
+    font-size: 1.5rem; /* Larger font size */
+}
+
+#logo {
+    width: 50%;
+    max-width: 300px; /* Bigger logo */
+    border-radius: 10px;
+}
+
+.login-button {
+    width: 100%;
+    height: 100%;
+    border: none;
+    border-radius: 10px;
+    font-size: 1.5rem; /* Bigger text on buttons */
+    color: white;
+    cursor: pointer;
+    transition: transform 0.2s, opacity 0.2s;
+}
+
+.login-button:hover {
+    transform: scale(1.05);
+    opacity: 0.9;
+}
+
+.google-div-box {
+    background-color: #4285F4;
+}
+
+.google-button {
+    background-color: #4285F4;
+}
+
+.discord-div-box {
+    background-color: #5865F2;
+}
+
+.discord-button {
+    background-color: #5865F2;
+}
 
 body {
-    background-color: #070F2B 
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.container {
+    padding-top: 100px;
+    width: 100%;
+    color: white;
+}
+
+#logo-text {
+    margin-top: 40px;
+    font-size: 80px;
 }
