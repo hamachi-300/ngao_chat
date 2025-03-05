@@ -1,0 +1,16 @@
+.layout {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.login {
+    width: 350px;
+    height: 500px;
+    border: 2px solid lightblue;
+  }
+
+body {
+    background-color: #070F2B 
+}
