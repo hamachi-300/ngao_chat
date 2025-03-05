@@ -5,7 +5,7 @@ export default function LoginPage() {
         <div className="layout">
             <div className="login">
                 <image src=""/>
-                <h1>Ngao Ngao</h1>
+                <h1>Ngao</h1>
             </div>
         </div>
     );
