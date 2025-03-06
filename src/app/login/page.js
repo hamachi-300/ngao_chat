@@ -1,14 +1,9 @@
 import "./loginpage.css";
-import { useRouter } from 'next/router';
 
 export default function LoginPage() {
 
-    const router = useRouter();
-
     const handleClick = (method) => {
         if (method === 'discord') {
-
-            router.push('');
 
 
         } else if (method === 'google') {
