@@ -2,15 +2,6 @@ import "./loginpage.css";
 
 export default function LoginPage() {
 
-    const handleClick = (method) => {
-        if (method === 'discord') {
-
-
-        } else if (method === 'google') {
-
-        }
-    }
-
     return (
         <div className="layout">
             <div className="login">
@@ -20,10 +11,14 @@ export default function LoginPage() {
                 </div>
                 <div className="all-buttons-div">
                     <div className="login-box google-div-box">
-                        <button onClick={handleClick('google')} className="login-button google-button">Login with Google</button>
+                        <a>
+                            <button className="login-button google-button">Login with Google</button>
+                        </a>
                     </div>
                     <div className="login-box discord-div-box">
-                        <button onClick={handleClick('discord')} className="login-button discord-button">Login with Discord</button>
+                        <a href="https://discord.com/oauth2/authorize?client_id=1347047527559462983&response_type=code&redirect_uri=http%3A%2F%2Flocalhost%3A3000%2Fapi%2Fauth%2Fdiscord&scope=identify+connections+email">
+                            <button className="login-button discord-button">Login with Discord</button>
+                        </a>
                     </div>
                 </div>
             </div>
