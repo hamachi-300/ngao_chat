@@ -1,6 +1,21 @@
-import "./loginpage.css"
+import "./loginpage.css";
+import { useRouter } from 'next/router';
 
 export default function LoginPage() {
+
+    const router = useRouter();
+
+    const handleClick = (method) => {
+        if (method === 'discord') {
+
+            router.push('');
+
+
+        } else if (method === 'google') {
+
+        }
+    }
+
     return (
         <div className="layout">
             <div className="login">
@@ -10,10 +25,10 @@ export default function LoginPage() {
                 </div>
                 <div className="all-buttons-div">
                     <div className="login-box google-div-box">
-                        <button className="login-button google-button">Login with Google</button>
+                        <button onClick={handleClick('google')} className="login-button google-button">Login with Google</button>
                     </div>
                     <div className="login-box discord-div-box">
-                        <button className="login-button discord-button">Login with Discord</button>
+                        <button onClick={handleClick('discord')} className="login-button discord-button">Login with Discord</button>
                     </div>
                 </div>
             </div>
