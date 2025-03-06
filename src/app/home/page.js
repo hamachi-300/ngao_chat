@@ -1,15 +1,19 @@
-import { cookies } from 'next/headers';
+'use client';
+
 import { useEffect, useState } from 'react';
 
 export default function HomePage() {
+
+    console.log('0');
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         // Get the access token from cookies
-        const token = cookies().get('discord_access_token')?.value;
+        const token = getCookie('discord_access_token');
 
         if (!token) {
+            console.log('1');
             window.location.href = '/login'; // Redirect to login if no token
             return;
         }
@@ -28,10 +32,13 @@ export default function HomePage() {
                     setUser(userData); // Store user data in state
                 } else {
                     // Handle error if the API request fails
+
+                    console.log('2');
                     window.location.href = '/login'; // Redirect to login if fetching fails
                 }
             } catch (error) {
                 console.error('Error fetching user data:', error);
+                console.log('3');
                 window.location.href = '/login'; // Redirect to login if an error occurs
             } finally {
                 setLoading(false); // Stop loading once the request is complete
@@ -40,6 +47,14 @@ export default function HomePage() {
 
         fetchUserData();
     }, []);
+
+    // Utility function to get cookie by name
+    function getCookie(name) {
+        const value = `; ${document.cookie}`;
+        const parts = value.split(`; ${name}=`);
+        if (parts.length === 2) return parts.pop().split(';').shift();
+        return null;
+    }
 
     // Display a loading state while fetching user data
     if (loading) {

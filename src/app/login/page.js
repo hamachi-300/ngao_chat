@@ -11,12 +11,12 @@ export default function LoginPage() {
                 </div>
                 <div className="all-buttons-div">
                     <div className="login-box google-div-box">
-                        <a>
+                        <a className="login-button">
                             <button className="login-button google-button">Login with Google</button>
                         </a>
                     </div>
                     <div className="login-box discord-div-box">
-                        <a href="https://discord.com/oauth2/authorize?client_id=1347047527559462983&response_type=code&redirect_uri=http%3A%2F%2Flocalhost%3A3000%2Fapi%2Fauth%2Fdiscord&scope=identify+connections+email">
+                        <a className="login-button" href="https://discord.com/oauth2/authorize?client_id=1347047527559462983&response_type=code&redirect_uri=http%3A%2F%2Flocalhost%3A3000%2Fapi%2Fauth%2Fdiscord&scope=identify+connections+email">
                             <button className="login-button discord-button">Login with Discord</button>
                         </a>
                     </div>
