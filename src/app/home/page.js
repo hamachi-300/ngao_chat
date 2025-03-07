@@ -3,23 +3,27 @@
 
 import {signOut, useSession} from 'next-auth/react'
 import { useRouter } from 'next/navigation'
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 
 const Home = () => {
 
-    //const [loading, setLoading] = useState(true);
-    const {data: session} = useSession();
+    const {data: session, status} = useSession();
     const router = useRouter();
 
     useEffect(() => {
         if (!session) {
             router.push("/login");
         }
+    }, [status, router]);
 
-        console.log(session);
-    }, [session, router]);
 
-    return !session ? (<></>) : (
+    if (status === 'loading') {
+        return (<p>Loading...</p>);
+    }
+
+    if (!session) return null;
+
+    return (
         <div>
             <img src={session.user?.image} referrerPolicy="no-referrer"/>
             <p>Your Name: {session.user?.name}</p>
