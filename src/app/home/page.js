@@ -3,19 +3,23 @@
 
 import {signOut, useSession} from 'next-auth/react'
 import { useRouter } from 'next/navigation'
+import { useEffect } from 'react';
 
 const Home = () => {
   const {data: session} = useSession();
   const router = useRouter();
 
-  if (!session) {
-    router.push("/login");
-    return null;
-  }
+  useEffect(() => {
+    if (!session) {
+        router.push("/login");
+    }
+  }, [session, router]);
 
-  return (
+  return !session ? (<></>) : (
     <div>
-        Welcome you are logged in!!
+        <img src={session.user?.image} />
+        <p>Your Name: {session.user?.name}</p>
+        <p>Your Email: {session.user?.email}</p>
         <br />
         <button onClick={() => signOut()}>Sign Out!</button>
     </div>

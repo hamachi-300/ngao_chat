@@ -3,16 +3,18 @@
 import "./loginpage.css";
 import {signIn, signOut, useSession} from 'next-auth/react'
 import { useRouter } from "next/navigation"
+import { useEffect } from "react";
 
 export default function LoginPage() {
 
     const router = useRouter();
     const {data: session} = useSession();
 
-    if (session) {
-        router.push('/home');
-        return null;
-    }
+    useEffect(() => {
+        if (session) {
+            router.push('/home');
+        }
+    }, [session, router]);
 
     return (
         <div className="layout">
