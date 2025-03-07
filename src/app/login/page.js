@@ -25,7 +25,7 @@ export default function LoginPage() {
                 </div>
                 <div className="all-buttons-div">
                     <div className="login-box google-div-box">
-                        <a className="login-button">
+                        <a className="login-button" onClick={() => {signIn('google')}}>
                             <button className="login-button google-button">Login with Google</button>
                         </a>
                     </div>
