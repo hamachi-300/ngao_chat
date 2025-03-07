@@ -1,10 +1,14 @@
 import "./globals.css"
+import AuthProvider from "./components/SessionProvider";
 
-export default function RootLayout({ children }) {
+export default function RootLayout({ children, Session }) {
+
   return (
     <html lang="en">
       <body>
-        {children}
+        <AuthProvider session={Session}>
+            {children}
+        </AuthProvider>
       </body>
     </html>
   );
