@@ -36,7 +36,6 @@ export async function POST(request) {
         await collection.insertOne({
             user_id: user_id, 
             email: body.email,
-            login_method: body.login_method,
             profile_id: user_id % 2
         });
         return Response.json({ message: "insert successed", content: body }, { status: 200 });

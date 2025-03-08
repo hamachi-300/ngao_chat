@@ -6,9 +6,8 @@ import PostModal from "./modal/PostModal";
 
 export default function Main(){
 
-    // login send user email and login method
+    // login page send user email
     const cur_email = "sirawut@gmail.com";
-    const cur_login_method = "discord";
 
     // fetch data from mongo db
     const [posts, setPosts] = useState([]);
@@ -32,7 +31,7 @@ export default function Main(){
             throw new Error('Failed to fetch users');
         }
         const users = await response.json();
-        const cur_user = users.find(u => u.email === cur_email && u.login_method === cur_login_method);
+        const cur_user = users.find(u => u.email === cur_email);
         if (cur_user == null){
             router.push("/login");
         } else {
