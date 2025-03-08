@@ -1,25 +1,50 @@
 'use client'
 
 import { useEffect, useState } from "react";
+import { useRouter } from 'next/navigation'
 import PostModal from "./modal/PostModal";
 
 export default function Main(){
+
+    // login send user email and login method
+    const cur_email = "sirawut@gmail.com";
+    const cur_login_method = "discord";
 
     // fetch data from mongo db
     const [posts, setPosts] = useState([]);
     const [error, setError] = useState(null);
     const [isLoading, setLoading] = useState(true);
-    
+    const [curUser, setCurUser] = useState({});
+    const router = useRouter();
+
+    const getPosts = async () => {
+        const response = await fetch('/api/data/posts')
+        if (!response.ok) {
+            throw new Error('Failed to fetch posts');
+        }
+        const posts = await response.json();
+        setPosts(posts);
+    }
+
+    const getUsers = async () => {
+        const response = await fetch('/api/data/users')
+        if (!response.ok) {
+            throw new Error('Failed to fetch users');
+        }
+        const users = await response.json();
+        const cur_user = users.find(u => u.email === cur_email && u.login_method === cur_login_method);
+        if (cur_user == null){
+            router.push("/login");
+        } else {
+            setCurUser(cur_user);
+        }
+    }
 
     useEffect(() => {
         const fetchUsers = async () => {
             try {
-                const response = await fetch('/api/data/posts')
-                if (!response.ok) {
-                  throw new Error('Failed to fetch posts');
-                }
-                const posts = await response.json();
-                setPosts(posts);
+                await getPosts();
+                await getUsers();
             } catch (err) {
                 setError(err.message);
             } finally {
@@ -28,6 +53,11 @@ export default function Main(){
         };
         fetchUsers();
     }, []);
+
+    // refresh web page when got current user info
+    useEffect(() => {
+
+    }, [curUser]);
 
     if (isLoading) return <div>Loading...</div>;
     if (error) return <div>Error: {error}</div>;
@@ -54,7 +84,7 @@ export default function Main(){
             <div>=====================================================================</div>
             <div id="sticky-buttons">
                 <button>notification</button>
-                <PostModal header={1}/>
+                <PostModal user_id={curUser.user_id}/>
             </div>
         </div>
     )
