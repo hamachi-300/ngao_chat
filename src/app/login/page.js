@@ -30,7 +30,7 @@ export default function LoginPage() {
                         </a>
                     </div>
                     <div className="login-box discord-div-box">
-                        <a className="login-button" onClick={ () => signIn('discord') }>
+                        <a className="login-button" onClick={() => signIn('discord') }>
                             <button className="login-button discord-button">Login with Discord</button>
                         </a>
                     </div>

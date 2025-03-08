@@ -9,14 +9,14 @@
 }
 
 .login {
-    width: 800px; /* Much wider for desktop */
-    height: 1100px; /* Taller for desktop */
+    width: 50rem; /* Much wider for desktop */
+    height: 45%; /* Taller for desktop */
     text-align: center;
     color: white;
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 40px; /* Increase space between elements */
+    gap: 4px; /* Increase space between elements */
     border-radius: 15px;
     padding: 30px;
     background-color: rgba(0, 0, 0, 0.3);
@@ -28,24 +28,19 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    gap: 30px; /* Larger gap for better spacing */
+    gap: 2rem; /* Larger gap for better spacing */
     margin-top: 100px;
 }
 
 .login-box {
-    width: 90%; /* Wider button containers */
-    height: 100px; /* Taller buttons */
     display: flex;
     justify-content: center;
     align-items: center;
     border-radius: 12px;
     color: white;
-    font-size: 1.5rem; /* Larger font size */
 }
 
 #logo {
-    width: 50%;
-    max-width: 300px; /* Bigger logo */
     border-radius: 10px;
 }
 
@@ -95,5 +90,4 @@ body {
 
 #logo-text {
     margin-top: 40px;
-    font-size: 80px;
 }
