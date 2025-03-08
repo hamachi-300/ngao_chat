@@ -16,12 +16,33 @@ const handler = NextAuth({
             id: profile.sub, 
             name: profile.name,
             email: profile.email,
-            image: profile.picture, 
-            username: null
+            image: profile.picture
           };
         }
     })
   ],
+  callbacks: {
+    session: async ({ session, token }) => {
+      if (session?.user) {
+        session.user.id = token.sub;
+        session.user.image = token.picture;
+        session.user.email = token.email;
+        session.user.name = token.name;
+      }
+
+      console.log("Modified Session: ", session);
+      return session;
+    },
+    jwt: async ({ user, token }) => {
+      if (user) {
+        token.uid = user.id;
+      }
+      return token;
+    },
+  },
+  session: {
+    strategy: 'jwt',
+  },
   adapter: MongoDBAdapter(client)
 })
 

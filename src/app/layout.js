@@ -10,11 +10,10 @@ export default function RootLayout({ children, Session }) {
       <body>
         <AuthProvider session={Session}>
           <SidebarProvider>
-            <div>
+            <div className="pt-16">
               <NavBar />
               {children}
             </div>
-            
           </SidebarProvider>
         </AuthProvider>
       </body>
