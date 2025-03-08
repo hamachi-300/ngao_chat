@@ -122,6 +122,66 @@ export default function Page({}) {
         }
     };
 
+    const increaseLike = async (comment) => {
+        const likeUrl = `/api/data/like/comment/${comment.comment_id}`;
+        
+        try {
+            
+            // Now send the updated like count to the server
+            const dataLike = {
+                like: comment.like
+            };
+    
+            const response = await fetch(likeUrl, {
+                method: "PATCH",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(dataLike)
+            });
+    
+            if (!response.ok) {
+                throw new Error("Failed to update like");
+            }
+    
+            console.log("Like increased successfully!");
+            
+            window.location.reload();
+    
+            // Optionally, you can fetch the updated comment data again or update the local state if you're managing it
+        } catch (error) {
+            console.error("Error increasing like:", error);
+        }
+    };
+
+    const increaseLikePost = async (post) => {
+        const likeUrl = `/api/data/like/post/${post.post_id}`;
+        
+        try {
+            
+            // Now send the updated like count to the server
+            const dataLike = {
+                like: post.like
+            };
+    
+            const response = await fetch(likeUrl, {
+                method: "PATCH",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(dataLike)
+            });
+    
+            if (!response.ok) {
+                throw new Error("Failed to update like");
+            }
+    
+            console.log("Like increased successfully!");
+            
+            window.location.reload();
+    
+        } catch (error) {
+            console.error("Error increasing like:", error);
+        }
+    };
+    
+
     useEffect(() => {
         const fetchData = async () => {
             await getUsers();
@@ -154,7 +214,7 @@ export default function Page({}) {
             </ul>
             <div>=====================================================================</div>
             <p>{post.post_content}</p>
-            <p>Likes: {post.like}</p>
+            <button onClick={() => increaseLikePost(post)}>Likes: {post.like}</button>
             <div>=====================================================================</div>
             <h3>Comments</h3>
             {comments.length > 0 ? (
@@ -162,7 +222,7 @@ export default function Page({}) {
                     <div key={id}>
                         ----------------------------------------
                         <p>{comment.comment_content}</p>
-                        <p>Likes: {comment.like}</p>
+                        <button onClick={() => increaseLike(comment)}>Likes: {comment.like}</button>
                     </div>
                 ))
             ) : (

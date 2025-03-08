@@ -52,6 +52,35 @@ export default function Main(){
         }
     }
 
+    const increaseLikePost = async (post) => {
+        const likeUrl = `/api/data/like/post/${post.post_id}`;
+        
+        try {
+            
+            // Now send the updated like count to the server
+            const dataLike = {
+                like: post.like
+            };
+    
+            const response = await fetch(likeUrl, {
+                method: "PATCH",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(dataLike)
+            });
+    
+            if (!response.ok) {
+                throw new Error("Failed to update like");
+            }
+    
+            console.log("Like increased successfully!");
+            
+            window.location.reload();
+    
+        } catch (error) {
+            console.error("Error increasing like:", error);
+        }
+    };
+
     useEffect(() => {
         const fetchUsers = async () => {
             try {
@@ -88,7 +117,7 @@ export default function Main(){
                     posts.map((post, id) => (
                         <div key={id}>
                             {post.post_content}
-                            <button>like {post.like}</button>
+                            <button onClick={()=>increaseLikePost(post)}>like {post.like}</button>
                             <a href={`comment/${post.post_id}`}>
                                 <button>comment</button>
                             </a>
