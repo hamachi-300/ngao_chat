@@ -58,24 +58,16 @@ const Home = () => {
     session?.user && (
       <div className='p-6 max-w-4xl mx-auto'>
         <div className='flex justify-between mb-6'>
-          <button
-            onClick={() => signOut()}
-            className='bg-red-500 text-white py-2 px-4 rounded hover:bg-red-600'
-          >
-            Sign Out
-          </button>
-          <div className='flex gap-4'>
-            <button className='bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600'>
-              Notifications
-            </button>
-            <PostModal user_id={session.user.id} />
-          </div>
+          
+            <div className='flex gap-4'>
+                <PostModal user_id={session.user.id} />
+            </div>
         </div>
 
         <ul className='space-y-4'>
           {posts.map((post, id) => (
-            <li key={id} className='bg-white p-4 rounded shadow-md'>
-              <p className='mb-2 text-gray-800'>{post.post_content}</p>
+            <li key={id} className='bg-[#9290C3] p-4 rounded shadow-md'>
+              <p className='mb-2 font-bold text-white'>{post.post_content}</p>
               <div className='flex gap-2'>
                 <button className='text-green-600 hover:text-green-700'>
                   Like {post.like}

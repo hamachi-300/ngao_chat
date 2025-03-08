@@ -29,6 +29,7 @@ const handler = NextAuth({
         session.user.image = token.picture;
         session.user.email = token.email;
         session.user.name = token.name;
+        session.user.username = token.username;
       }
 
       console.log("Modified Session: ", session);
