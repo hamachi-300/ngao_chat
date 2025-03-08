@@ -5,7 +5,7 @@ import { useParams, useRouter } from "next/navigation";
 import ProfileModal from "../../main/modal/ProfileModal";
 
 export default function Page({}) {
-    const cur_email = "patigg@gmail.com"; // current user's email
+    const cur_email = "sirawut@gmail.com"; // current user's email
     const router = useRouter(); // for navigation
     const params = useParams(); // get params to client component
     const postId = params.post_id; // Post ID from URL params
@@ -84,18 +84,14 @@ export default function Page({}) {
         };
         try {
             if (curUser.user_id !== post.author_id) {
-                const notifyUrl = `/api/data/users/increase_notify/${post.author_id}`;
+                const notifyUrl = `/api/data/increase_notify/${author.user_id}`;
+                console.log(notifyUrl);
                 const dataAuthor = {
-                    user_id: author.user_id,
-                    email: author.eamil,
-                    profile_id: author.profile_id,
                     notify: author.notify
                 }
                 const response = await fetch(notifyUrl, {
                     method: "PATCH",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
+                    headers: { "Content-Type": "application/json" },
                     body: JSON.stringify(dataAuthor)
                 });
 
@@ -103,13 +99,13 @@ export default function Page({}) {
                     throw new Error("Failed to update notify");
                 }
             }
-            // const response = await fetch(url, {
-            //     method: "POST",
-            //     headers: {
-            //         "Content-Type": "application/json"
-            //     },
-            //     body: JSON.stringify(data)
-            // });
+            const response = await fetch(url, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(data)
+            });
 
             if (!response.ok) {
                 throw new Error("Error while posting comment");

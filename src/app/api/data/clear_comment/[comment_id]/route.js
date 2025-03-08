@@ -2,17 +2,17 @@
 
 import clientPromise from "../../../../lib/mongodb";
 
-// reset user nofity
+// clear post
 export async function GET(request, { params }) {
     try {
         // Connect to the database
         const db = (await clientPromise).db(process.env.MONGO_DB);
-        const collection = db.collection("users");
+        const collection = db.collection("comments");
 
         // Perform the update operation
         const result = await collection.updateOne(
-            { user_id: parseInt(params.user_id) },
-            { $set: {notify: 0} }
+            { comment_id: parseInt(params.comment_id) },
+            { $set: {is_cleared: true} }
         );
   
         // Check if the update was successful

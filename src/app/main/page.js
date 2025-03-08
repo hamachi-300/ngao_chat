@@ -10,7 +10,7 @@ import NotifyModal from "./modal/NotifyModal"
 export default function Main(){
 
     // login page send user email
-    const cur_email = "sirawut@gmail.com"
+    const cur_email = "patigg@gmail.com"
 
     // fetch data from mongo db
     const [posts, setPosts] = useState([]);
