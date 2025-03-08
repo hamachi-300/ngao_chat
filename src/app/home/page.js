@@ -24,14 +24,13 @@ const Home = () => {
     if (!session) return null;
 
     return (
-        <div>
-            <img src={session.user?.image} referrerPolicy="no-referrer"/>
-            <p>Your Name: {session.user?.name}</p>
-            <p>Your Email: {session.user?.email}</p>
-            <br />
-            <button onClick={() => signOut()}>Sign Out!</button>
-        </div>
-    )
+        status === 'authenticated' &&
+        session?.user && (
+          <div>
+            
+          </div>
+        )
+      )
 }
 
 export default Home

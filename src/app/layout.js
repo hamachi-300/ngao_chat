@@ -1,5 +1,7 @@
 import "./globals.css"
 import AuthProvider from "./components/SessionProvider";
+import NavBar from "./components/NavBar"
+import { SidebarProvider } from "./components/SidebarContext";
 
 export default function RootLayout({ children, Session }) {
 
@@ -7,7 +9,13 @@ export default function RootLayout({ children, Session }) {
     <html lang="en">
       <body>
         <AuthProvider session={Session}>
-            {children}
+          <SidebarProvider>
+            <div>
+              <NavBar />
+              {children}
+            </div>
+            
+          </SidebarProvider>
         </AuthProvider>
       </body>
     </html>
