@@ -1,27 +1,36 @@
-let posts = [
-    {
-        poster_id: 1,
-        content: "หารับหิ้วแม็คโคร"
-    },
-    {
-        poster_id: 2,
-        content: "อนุญาตให้หลงใหล แต่ไม่อนุญาตให้หลงรัก"
-    },
-    {
-        poster_id: 3,
-        content: "หาเพื่อนคุยเหงามาก เบื่อปลื้ม "
-    },
-    {
-        poster_id: 4,
-        content: "อยากกินหนมจีนน้ำยา"
-    },
-    {
-        poster_id: 5,
-        content: "ทุกอย่างมันอยู่ที่ความพยายามของเราป่ะ"
-    }
-]
+'use client'
+
+import { useEffect, useState } from "react";
+import PostModal from "./modal/PostModal";
 
 export default function Main(){
+
+    // fetch data from mongo db
+    const [posts, setPosts] = useState([]);
+    const [error, setError] = useState(null);
+    const [isLoading, setLoading] = useState(true);
+    
+
+    useEffect(() => {
+        const fetchUsers = async () => {
+            try {
+                const response = await fetch('/api/data/posts')
+                if (!response.ok) {
+                  throw new Error('Failed to fetch posts');
+                }
+                const posts = await response.json();
+                setPosts(posts);
+            } catch (err) {
+                setError(err.message);
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchUsers();
+    }, []);
+
+    if (isLoading) return <div>Loading...</div>;
+    if (error) return <div>Error: {error}</div>;
 
     return (
         <div>
@@ -35,8 +44,8 @@ export default function Main(){
                 {
                     posts.map((post, id) => (
                         <div key={id}>
-                            {post.content}
-                            <button>like</button>
+                            {post.post_content}
+                            <button>like {post.like}</button>
                             <button>comment</button>
                         </div>
                     ))
@@ -45,7 +54,7 @@ export default function Main(){
             <div>=====================================================================</div>
             <div id="sticky-buttons">
                 <button>notification</button>
-                <button>post</button>
+                <PostModal header={1}/>
             </div>
         </div>
     )
