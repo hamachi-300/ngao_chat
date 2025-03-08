@@ -58,7 +58,7 @@ export default function PostModal({user_id}) {
           <div className="modal-content">
             <h2>Post</h2>
             <textarea className="input-textarea" placeholder={"Type here..."} value={content} onChange={handlePost}></textarea>
-            <button className="post-btn" onClick={submitPost}>
+            <button className="btn" onClick={submitPost}>
               Post Now...
             </button>
           </div>

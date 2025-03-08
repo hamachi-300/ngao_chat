@@ -3,17 +3,21 @@
 import { useEffect, useState } from "react";
 import { useRouter } from 'next/navigation'
 import PostModal from "./modal/PostModal";
+import ProfileModal from "./modal/ProfileModal"
+import NotifyModal from "./modal/NotifyModal"
+
 
 export default function Main(){
 
     // login page send user email
-    const cur_email = "sirawut@gmail.com";
+    const cur_email = "sirawut@gmail.com"
 
     // fetch data from mongo db
     const [posts, setPosts] = useState([]);
     const [error, setError] = useState(null);
     const [isLoading, setLoading] = useState(true);
     const [curUser, setCurUser] = useState({});
+    const [comments, setComment] = useState([]);
     const router = useRouter();
 
     const getPosts = async () => {
@@ -23,6 +27,15 @@ export default function Main(){
         }
         const posts = await response.json();
         setPosts(posts);
+    }
+
+    const getComments = async () => {
+        const response = await fetch('/api/data/comments')
+        if (!response.ok) {
+            throw new Error('Failed to fetch posts');
+        }
+        let comments = await response.json();
+        setComment(comments);
     }
 
     const getUsers = async () => {
@@ -43,6 +56,7 @@ export default function Main(){
         const fetchUsers = async () => {
             try {
                 await getPosts();
+                await getComments();
                 await getUsers();
             } catch (err) {
                 setError(err.message);
@@ -64,9 +78,9 @@ export default function Main(){
     return (
         <div>
             <ul id="nav-bar">
-                <li>;-;</li>
+                <li><a href="/main">;-;</a></li>
                 <li>Ngao Ngao</li>
-                <li>Profile</li>
+                <li><ProfileModal user={curUser}/></li>
             </ul>
             <div>=====================================================================</div>
             <div id="content">
@@ -75,14 +89,16 @@ export default function Main(){
                         <div key={id}>
                             {post.post_content}
                             <button>like {post.like}</button>
-                            <button>comment</button>
+                            <a href={`comment/${post.post_id}`}>
+                                <button>comment</button>
+                            </a>
                         </div>
                     ))
                 }
             </div>
             <div>=====================================================================</div>
             <div id="sticky-buttons">
-                <button>notification</button>
+                <NotifyModal user={curUser} posts={posts} comments={comments}/>
                 <PostModal user_id={curUser.user_id}/>
             </div>
         </div>
