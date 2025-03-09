@@ -6,7 +6,6 @@ export async function GET() {
         const collection = db.collection("comments");
 
         const comments = await collection.find().toArray();
-        console.log(comments);
 
         return Response.json(comments);
     } catch (error) {

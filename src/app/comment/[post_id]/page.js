@@ -73,7 +73,39 @@ export default function Page({ }) {
             }
             let commentsData = await response.json();
             commentsData = commentsData.filter(comment => comment.post_id == postId);
-            setComments(commentsData);
+    
+            // Extract unique author_ids from comments
+            const authorIds = [...new Set(commentsData.map(comment => comment.author_id))];
+    
+            // Fetch usernames for all authors
+            const authorResponse = await fetch(`/api/data/user`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ author_ids: authorIds }) // Send the list of author IDs to fetch usernames
+            });
+    
+            if (!authorResponse.ok) {
+                throw new Error("Failed to fetch authors");
+            }
+    
+            const authorsData = await authorResponse.json();
+    
+            // Map author ID to username for quick lookup
+            const authorMap = authorsData.reduce((acc, author) => {
+                acc[author.id] = author.username;
+                return acc;
+            }, {});
+    
+            // Add username to each comment
+            const commentsWithUsernames = commentsData.map(comment => ({
+                ...comment,
+                username: authorMap[comment.author_id],
+            }));
+    
+            setComments(commentsWithUsernames);
+    
         } catch (error) {
             console.error("Error fetching comments:", error);
         }
@@ -160,11 +192,12 @@ export default function Page({ }) {
                                 <div className="w-11/12 max-w-[600px] flex flex-col justify-center gap-1.5">
                                     <div className="bg-[#9290C3] p-4 shadow-md rounded-md flex flex-col justify-between w-full">
                                         <p className="mb-2 font-bold text-white">{comment.comment_content}</p>
+                                        <p className="ml-1 text-gray-200 font-semibold text-xs">@{comment.author_id}</p>
                                     </div>
                                     <div className="flex gap-4">
                                         <div className="flex gap-1.5">
                                             <button className="text-2xl"><AiOutlineHeart /></button>
-                                            <p>{post.like.length}</p>
+                                            <p>{comment.like.length}</p>
                                         </div>
                                     </div>
                                 </div>

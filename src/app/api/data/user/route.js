@@ -21,6 +21,27 @@ export async function POST(request) {
     
 }
 
+app.post('/api/data/users', async (req, res) => {
+    const { author_ids } = req.body;
+
+    try {
+        const users = await db.collection('users').find({
+            _id: { $in: author_ids }
+        }).toArray();
+
+        // Return only the necessary fields: id and username
+        const usersData = users.map(user => ({
+            id: user._id,
+            username: user.username,
+        }));
+
+        res.json(usersData);
+    } catch (error) {
+        console.error("Error fetching users:", error);
+        res.status(500).json({ error: "Failed to fetch users" });
+    }
+});
+
 
 
 
