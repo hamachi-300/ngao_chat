@@ -50,8 +50,6 @@ export default function Page({ }) {
     const getAuthor = async (post) => {
         try {
 
-            console.log('Author: ', post.author_id);
-
             const response = await fetch(`/api/data/user/users/${post.author_id}`);
             if (!response.ok) {
                 throw new Error("Failed to fetch author");
@@ -71,9 +69,41 @@ export default function Page({ }) {
             if (!response.ok) {
                 throw new Error("Failed to fetch comments");
             }
+    
             let commentsData = await response.json();
             commentsData = commentsData.filter(comment => comment.post_id == postId);
-            setComments(commentsData);
+    
+            // Extract all unique author IDs from comments
+            const authorIds = [...new Set(commentsData.map(comment => comment.author_id))];
+
+            // Fetch all usernames based on the author IDs
+            const authorResponse = await fetch(`/api/data/user/users`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ author_ids: authorIds })
+            });
+    
+            if (!authorResponse.ok) {
+                throw new Error("Failed to fetch usernames");
+            }
+    
+            const authorData = await authorResponse.json();
+    
+            // Create a map of user IDs to usernames
+            const userMap = authorData.reduce((map, user) => {
+                map[user.id] = user.username;
+                return map;
+            }, {});
+    
+            // Map the comments with the correct username
+            const commentsWithUsername = commentsData.map(comment => ({
+                ...comment,
+                username: userMap[comment.author_id] || `@${comment.author_id}`
+            }));
+    
+            setComments(commentsWithUsername);
         } catch (error) {
             console.error("Error fetching comments:", error);
         }
@@ -142,7 +172,7 @@ export default function Page({ }) {
                             <button className="text-white text-2xl"><AiOutlineHeart /></button>
                             <p>{post.like.length}</p>
                         </div>
-                        <p className="ml-1 text-gray-400 font-semibold text-xs">@{author.username}</p>
+                        <p className="ml-1 text-gray-400 font-semibold text-xs">{author.username}</p>
                     </div>
                     <div className="flex justify-center">
                         <div className="h-1 w-11/12 bg-[#9290C3] rounded-full"></div>
@@ -156,7 +186,7 @@ export default function Page({ }) {
                                 <div className="w-11/12 max-w-[600px] flex flex-col justify-center gap-1.5">
                                     <div className="bg-[#9290C3] p-4 shadow-md rounded-md flex flex-col justify-between w-full">
                                         <p className="mb-2 font-bold text-white">{comment.comment_content}</p>
-                                        <p className="ml-1 text-gray-200 font-semibold text-xs">@{comment.author_id}</p>
+                                        <p className="ml-1 text-gray-300 font-semibold text-xs">{comment.username}</p>
                                     </div>
                                     <div className="flex gap-4">
                                         <div className="flex gap-1.5">

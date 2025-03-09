@@ -20,14 +20,48 @@ const Home = () => {
   };
 
   const getPosts = async () => {
-    const response = await fetch('/api/data/posts');
-    if (!response.ok) {
-      throw new Error('Failed to fetch posts');
-    }
-    const posts = await response.json();
-    setPosts(posts);
+    try {
+        const response = await fetch('/api/data/posts');
+        if (!response.ok) {
+            throw new Error('Failed to fetch posts');
+        }
 
-    console.log(posts);
+        let postsData = await response.json();
+
+        // Extract all unique author IDs from posts
+        const authorIds = [...new Set(postsData.map(post => post.author_id))];
+
+        // Fetch all usernames based on the author IDs
+        const authorResponse = await fetch('/api/data/user/users', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ author_ids: authorIds })
+        });
+
+        if (!authorResponse.ok) {
+            throw new Error('Failed to fetch usernames');
+        }
+
+        const authorData = await authorResponse.json();
+
+        // Create a map of user IDs to usernames
+        const userMap = authorData.reduce((map, user) => {
+            map[user.id] = user.username;
+            return map;
+        }, {});
+
+        // Map the posts with the correct username
+        const postsWithUsername = postsData.map(post => ({
+            ...post,
+            username: userMap[post.author_id] || `@${post.author_id}`
+        }));
+
+        setPosts(postsWithUsername);
+    } catch (error) {
+        console.error('Error fetching posts:', error);
+    }
   };
 
   useEffect(() => {
@@ -75,6 +109,7 @@ const Home = () => {
                 <div className='flex flex-col gap-1.5'>
                   <div className='bg-[#9290C3] p-4 shadow-md rounded-md flex flex-col justify-between '>
                     <p className='mb-2 font-bold text-white'>{post.post_content}</p>
+                    <p className="ml-1 text-gray-300 font-semibold text-xs">{post.username}</p>
                   </div>
                   <div className='flex gap-4'>
 
