@@ -36,7 +36,7 @@ export async function POST(request) {
             post_id: post_id,
             post_content: body.post_content,
             author_id: body.author_id,
-            like: 0
+            like: []
         });
         return Response.json({ message: "insert successed", content: body }, { status: 200 });
     } catch (error) {

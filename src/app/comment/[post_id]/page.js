@@ -1,10 +1,193 @@
 'use client';
 
+import { useSession } from 'next-auth/react';
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
-import ProfileModal from "../../main/modal/ProfileModal";
+import { IoCaretBackOutline } from "react-icons/io5";
+import { AiOutlineHeart } from "react-icons/ai";
+import { FiSend } from "react-icons/fi";
 
-export default function Page({}) {
+export default function Page({ }) {
+
+    const { data: session, status } = useSession();
+    const router = useRouter();
+    const params = useParams();
+    const [post, setPost] = useState({});
+    const [isLoading, setLoading] = useState(true);
+    const [author, setAuthor] = useState({});
+    const [comments, setComments] = useState([]);
+    const [commentMessage, setCommentMessage] = useState("");
+    const postId = params.post_id;
+
+    const getPost = async () => {
+        try {
+            let response = await fetch(`/api/data/posts/${postId}`);
+            if (!response.ok) {
+                throw new Error("Failed to fetch post");
+            }
+            const postData = await response.json();
+
+            console.log(postData);
+
+            setPost(postData);
+
+            await getAuthor(postData);
+            await getComments();
+        } catch (error) {
+            console.error("Error fetching post:", error);
+        }
+    };
+
+    useEffect(() => {
+        getPost();
+    }, []);
+
+    useEffect(() => {
+        getComments();
+    }, [isLoading])
+
+
+    const getAuthor = async (post) => {
+        try {
+
+            console.log('Author: ', post.author_id);
+
+            const response = await fetch(`/api/data/user/${post.author_id}`);
+            if (!response.ok) {
+                throw new Error("Failed to fetch author");
+            }
+            const authorData = await response.json();
+            setAuthor(authorData);
+
+            setLoading(false);
+        } catch (error) {
+            //console.error("Error fetching author:", error);
+        }
+    };
+
+    const getComments = async () => {
+        try {
+            const response = await fetch(`/api/data/comments`);
+            if (!response.ok) {
+                throw new Error("Failed to fetch comments");
+            }
+            let commentsData = await response.json();
+            commentsData = commentsData.filter(comment => comment.post_id == postId);
+            setComments(commentsData);
+        } catch (error) {
+            console.error("Error fetching comments:", error);
+        }
+    };
+
+    const submitComment = async () => {
+
+        if (commentMessage.length > 0) {
+
+            setLoading(true);
+
+            const url = "/api/data/comments";
+            const data = {
+                post_id: parseInt(postId),
+                author_id: session.user.id,
+                comment_content: commentMessage
+            };
+            try { 
+                const response = await fetch(url, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                if (!response.ok) {
+                    throw new Error("Error while posting comment");
+                }
+
+                const result = await response.json();
+
+                // Instead of reload, update the state to re-render the page with the new comment
+                setComments((prevComments) => [result, ...prevComments]);
+                setCommentMessage("");
+                setLoading(false);
+            } catch (error) {
+                console.log("Error:", error);
+            }
+        }
+    };
+
+
+    useEffect(() => {
+        if (!session) {
+            router.push('/login');
+        }
+    }, [status, router]);
+
+    if (status === 'loading' || isLoading) {
+        return <p className="text-center mt-10 text-lg text-gray-500">Loading...</p>;
+    }
+
+    return (
+        <div className="flex justify-center items-center min-h-screen">
+            <div className="bg-[#0c163d] w-200 min-h-screen relative pb-24">
+                <div className="w-full h-50 flex flex-col justify-between">
+                    <p className="ml-15 m-4 mt-10 text-white font-semibold text-3xl">{post.post_content}</p>
+                    <div className="flex flex-col ml-15 m-4 gap-2">
+                        <div className="flex gap-1.5">
+                            <button className="text-white text-2xl"><AiOutlineHeart /></button>
+                            <p>{post.like.length}</p>
+                        </div>
+                        <p className="ml-1 text-gray-400 font-semibold text-xs">@{author.username}</p>
+                    </div>
+                    <div className="flex justify-center">
+                        <div className="h-1 w-11/12 bg-[#9290C3] rounded-full"></div>
+                    </div>
+                </div>
+
+                <div className="flex justify-center mt-10">
+                    <ul className="space-y-6 flex flex-col items-center w-full">
+                        {comments.map((comment, id) => (
+                            <li key={id} className="shadow-md flex justify-center w-full">
+                                <div className="w-11/12 max-w-[600px] flex flex-col justify-center gap-1.5">
+                                    <div className="bg-[#9290C3] p-4 shadow-md rounded-md flex flex-col justify-between w-full">
+                                        <p className="mb-2 font-bold text-white">{comment.comment_content}</p>
+                                    </div>
+                                    <div className="flex gap-4">
+                                        <div className="flex gap-1.5">
+                                            <button className="text-2xl"><AiOutlineHeart /></button>
+                                            <p>{post.like.length}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </li>
+                        ))}
+                    </ul>
+                </div>
+
+                {/* Fixed Reply Button */}
+                <div 
+                    className="fixed bottom-5 left-1/2 transform -translate-x-1/2 flex bg-[#E5E7EB] w-11/12 max-w-[600px] rounded-2xl shadow-md"
+                    style={{ zIndex: 10 }}
+                >
+                    <input 
+                        type="text" 
+                        placeholder="Write a reply..." 
+                        className="flex-1 p-3 bg-transparent text-[#070F2B] outline-none rounded-l-2xl"
+                        value={commentMessage || ""}
+                        onChange={(e) => setCommentMessage(e.target.value)}
+                    />
+                    <button 
+                        className="p-3 bg-[#615FFF] text-2xl hover:bg-[#8d8bff] transition-all duration-250 text-white font-semibold rounded-r-2xl"
+                        onClick={submitComment}
+                    >
+                        <FiSend />
+                    </button>
+                </div>
+            </div>
+        </div>
+
+    );
+
     // const cur_email = "sirawut@gmail.com"; // current user's email
     // const router = useRouter(); // for navigation
     // const params = useParams(); // get params to client component
@@ -124,28 +307,28 @@ export default function Page({}) {
 
     // const increaseLike = async (comment) => {
     //     const likeUrl = `/api/data/like/comment/${comment.comment_id}`;
-        
+
     //     try {
-            
+
     //         // Now send the updated like count to the server
     //         const dataLike = {
     //             like: comment.like
     //         };
-    
+
     //         const response = await fetch(likeUrl, {
     //             method: "PATCH",
     //             headers: { "Content-Type": "application/json" },
     //             body: JSON.stringify(dataLike)
     //         });
-    
+
     //         if (!response.ok) {
     //             throw new Error("Failed to update like");
     //         }
-    
+
     //         console.log("Like increased successfully!");
-            
+
     //         window.location.reload();
-    
+
     //         // Optionally, you can fetch the updated comment data again or update the local state if you're managing it
     //     } catch (error) {
     //         console.error("Error increasing like:", error);
@@ -154,33 +337,33 @@ export default function Page({}) {
 
     // const increaseLikePost = async (post) => {
     //     const likeUrl = `/api/data/like/post/${post.post_id}`;
-        
+
     //     try {
-            
+
     //         // Now send the updated like count to the server
     //         const dataLike = {
     //             like: post.like
     //         };
-    
+
     //         const response = await fetch(likeUrl, {
     //             method: "PATCH",
     //             headers: { "Content-Type": "application/json" },
     //             body: JSON.stringify(dataLike)
     //         });
-    
+
     //         if (!response.ok) {
     //             throw new Error("Failed to update like");
     //         }
-    
+
     //         console.log("Like increased successfully!");
-            
+
     //         window.location.reload();
-    
+
     //     } catch (error) {
     //         console.error("Error increasing like:", error);
     //     }
     // };
-    
+
 
     // useEffect(() => {
     //     const fetchData = async () => {
@@ -191,7 +374,7 @@ export default function Page({}) {
     //     };
     //     fetchData();
     // }, [postId]);
-    
+
     // useEffect(() => {
     //     const fetchData = async () => {
     //         await getAuthor();
@@ -205,42 +388,41 @@ export default function Page({}) {
 
     // console.log(author)
 
-    return (
+    // return (
 
-        <>
-        </>
 
-        // <div>
-        //     <ul id="nav-bar">
-        //         <li><a href="/main">;-;</a></li>
-        //         <li>Comment</li>
-        //         <li><ProfileModal user={curUser} /></li>
-        //     </ul>
-        //     <div>=====================================================================</div>
-        //     <p>{post.post_content}</p>
-        //     <button onClick={() => increaseLikePost(post)}>Likes: {post.like}</button>
-        //     <div>=====================================================================</div>
-        //     <h3>Comments</h3>
-        //     {comments.length > 0 ? (
-        //         comments.map((comment, id) => (
-        //             <div key={id}>
-        //                 ----------------------------------------
-        //                 <p>{comment.comment_content}</p>
-        //                 <button onClick={() => increaseLike(comment)}>Likes: {comment.like}</button>
-        //             </div>
-        //         ))
-        //     ) : (
-        //         <div>No comments yet.</div>
-        //     )}
-        //     <div className="post-comment">
-        //         <input
-        //             type="text"
-        //             placeholder="Comment something..."
-        //             value={comment}
-        //             onChange={handleComment}
-        //         />
-        //         <button onClick={submitComment}>&#8594;</button>
-        //     </div>
-        // </div>
-    );
+
+    //     // <div>
+    //     //     <ul id="nav-bar">
+    //     //         <li><a href="/main">;-;</a></li>
+    //     //         <li>Comment</li>
+    //     //         <li><ProfileModal user={curUser} /></li>
+    //     //     </ul>
+    //     //     <div>=====================================================================</div>
+    //     //     <p>{post.post_content}</p>
+    //     //     <button onClick={() => increaseLikePost(post)}>Likes: {post.like}</button>
+    //     //     <div>=====================================================================</div>
+    //     //     <h3>Comments</h3>
+    //     //     {comments.length > 0 ? (
+    //     //         comments.map((comment, id) => (
+    //     //             <div key={id}>
+    //     //                 ----------------------------------------
+    //     //                 <p>{comment.comment_content}</p>
+    //     //                 <button onClick={() => increaseLike(comment)}>Likes: {comment.like}</button>
+    //     //             </div>
+    //     //         ))
+    //     //     ) : (
+    //     //         <div>No comments yet.</div>
+    //     //     )}
+    //     //     <div className="post-comment">
+    //     //         <input
+    //     //             type="text"
+    //     //             placeholder="Comment something..."
+    //     //             value={comment}
+    //     //             onChange={handleComment}
+    //     //         />
+    //     //         <button onClick={submitComment}>&#8594;</button>
+    //     //     </div>
+    //     // </div>
+    // );
 }

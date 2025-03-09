@@ -31,14 +31,14 @@ export async function POST(request) {
             },
         ]).toArray();
         
-        const comment_id = result[0].maxCommentId + 1
+        const comment_id = result.length === 0 ? 1 : result[0].maxCommentId + 1
         
         await collection.insertOne({
             comment_id: comment_id,
             post_id: body.post_id,
             author_id: body.author_id,
             comment_content: body.comment_content,
-            like: 0,
+            like: [],
             is_cleared: false
         });
         return Response.json({ message: "insert successed", content: body }, { status: 200 });

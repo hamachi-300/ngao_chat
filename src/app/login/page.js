@@ -15,7 +15,7 @@ export default function LoginPage() {
     }, [session, router]);
 
     return (
-        <div className="flex flex-col items-center justify-center min-h-screen bg-red-100">
+        <div className="-mt-16 flex flex-col items-center justify-center min-h-screen bg-red-100">
             <div className="flex flex-col items-center mb-8">
                 <img
                     id="logo"

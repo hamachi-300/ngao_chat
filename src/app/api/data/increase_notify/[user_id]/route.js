@@ -1,6 +1,4 @@
-"use server"
-
-import clientPromise from "../../../../lib/mongodb";
+import clientPromise from "@/database/mongodb";
 
 // increase notify
 export async function PATCH(request, { params }) {

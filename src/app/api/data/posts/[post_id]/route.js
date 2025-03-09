@@ -5,8 +5,7 @@ export async function GET(request, { params }) {
     const db = (await clientPromise).db(process.env.MONGO_DB);
     const collection = db.collection("posts");
 
-    const post = await collection.findOne({ post_id: parseInt(params.post_id) });
-    console.log(post.post_id);
+    const post = await collection.findOne({ post_id: parseInt((await params).post_id) });
 
     return Response.json(post);
   } catch (error) {

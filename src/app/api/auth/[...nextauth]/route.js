@@ -31,8 +31,6 @@ const handler = NextAuth({
         session.user.name = token.name;
         session.user.username = token.username;
       }
-
-      console.log("Modified Session: ", session);
       return session;
     },
     jwt: async ({ user, token }) => {

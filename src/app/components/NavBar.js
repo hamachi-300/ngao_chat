@@ -19,7 +19,7 @@ export default function Navbar() {
         status === "authenticated" &&
         session?.user && (
 
-            <nav className="bg-indigo-500 text-white px-8 py-4 flex items-center justify-center shadow-lg h-16 fixed top-0 left-0 w-full z-50">
+            <nav className="bg-indigo-500 fixed text-white px-8 py-4 flex items-center justify-center shadow-lg h-16 top-0 left-0 w-full z-50">
                 
                 <button 
                     className="transition-all duration-250 text-3xl text-white hover:scale-110 hover:text-yellow-300 hover:drop-shadow-lg focus:outline-none"

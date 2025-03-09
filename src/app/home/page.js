@@ -26,6 +26,8 @@ const Home = () => {
     }
     const posts = await response.json();
     setPosts(posts);
+
+    console.log(posts);
   };
 
   useEffect(() => {
@@ -60,47 +62,15 @@ const Home = () => {
 
   if (!session) return null;
 
-  const increaseLikePost = async (post) => {
-    const likeUrl = `/api/data/like/post/${post.post_id}`;
-    
-    try {
-        
-        // Now send the updated like count to the server
-        const dataLike = {
-            like: post.like
-        };
-
-        const response = await fetch(likeUrl, {
-            method: "PATCH",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(dataLike)
-        });
-
-        if (!response.ok) {
-            throw new Error("Failed to update like");
-        }
-
-        console.log("Like increased successfully!");
-        
-        window.location.reload();
-
-    } catch (error) {
-        console.error("Error increasing like:", error);
-    }
-  };
-
   return (
     status === 'authenticated' &&
     session?.user && (
       <>
-        <div className='p-6 max-w-4xl mx-auto' onClick={(e) => {
-            console.log('0000');
-
-          }}>
+        <div className='p-6 max-w-4xl mx-auto'>
 
           <ul className='space-y-6'>
             {posts.map((post, id) => (
-              <li key={id} onClick={() => console.log('1111')} className='  shadow-md'>
+              <li key={id} className='  shadow-md'>
 
                 <div className='flex flex-col gap-1.5'>
                   <div className='bg-[#9290C3] p-4 shadow-md rounded-md flex flex-col justify-between '>
@@ -110,10 +80,10 @@ const Home = () => {
 
                     <div className='flex gap-1.5'>
                       <button className='text-2xl'><AiOutlineHeart /></button>
-                      <p>{post.like}</p>
+                      <p>{post.like.length}</p>
                     </div>
 
-                    <button onClick={() => console.log('2222')} className='text-white text-xl cursor-pointer'><FaRegComment /></button>
+                    <button onClick={() => router.push(`/comment/${post.post_id}`)} className='text-white text-xl cursor-pointer'><FaRegComment /></button>
                   </div>
                 </div>
 
