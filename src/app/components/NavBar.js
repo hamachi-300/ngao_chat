@@ -1,15 +1,14 @@
 "use client";
-import { useState } from "react"; // เพิ่มบรรทัดนี้
 import { useSession } from "next-auth/react";
 import { usePathname } from "next/navigation";
-import Link from "next/link";
 import { IoIosNotifications } from "react-icons/io";
+import { useRouter } from "next/navigation";
 import ProfileModal from "./ProfileModal";
 
 export default function Navbar() {
     const pathname = usePathname();
     const { data: session, status } = useSession();
-    const [ showProfile, setShowProfile ] = useState(false);
+    const router = useRouter();
 
     if (pathname === "/login") {
         return null;
@@ -28,9 +27,9 @@ export default function Navbar() {
                 </button>
 
                 {/* Centered Logo Text */}
-                <div className="text-4xl font-bold tracking-wide flex-1 justify-center text-center">
+                <button className="text-4xl font-bold tracking-wide flex-1 justify-center text-center cursor-pointer" onClick={() => router.push("/home")}>
                     <span className="text-2xl text-gray-200">Ngao Ngao</span> {/* Only the text */}
-                </div>
+                </button>
 
                 {/* Profile Image with Dropdown Shadow at the top right */}
                 <div className="absolute right-8">
