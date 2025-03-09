@@ -27,8 +27,6 @@ export default function Page({ }) {
             }
             const postData = await response.json();
 
-            console.log(postData);
-
             setPost(postData);
 
             await getAuthor(postData);
