@@ -52,10 +52,33 @@ const Home = () => {
             return map;
         }, {});
 
+        const commentCounts = await Promise.all(
+            postsData.map(async (post) => {
+                
+                const commentResponse = await fetch(`/api/data/comments?postId=${post.post_id}`);
+
+                if (!commentResponse.ok) {
+                    console.warn(`Failed to fetch comments for post ${post.post_id}`);
+                    return { post_id: post.post_id, count: 0 };
+                }
+
+                const commentsData = await commentResponse.json();
+
+                return { post_id: post.post_id, comments: commentsData };
+            })
+        );
+
+        // Create a map of post IDs to comment counts
+        const commentCountMap = commentCounts.reduce((map, { post_id, comments }) => {
+            map[post_id] = comments.length;
+            return map;
+        }, {});
+
         // Map the posts with the correct username
         const postsWithUsername = postsData.map(post => ({
             ...post,
-            username: userMap[post.author_id] || `@${post.author_id}`
+            username: userMap[post.author_id] || `@${post.author_id}`,
+            commentCount: commentCountMap[post.post_id] || 0
         }));
 
         setPosts(postsWithUsername);
@@ -120,7 +143,7 @@ const Home = () => {
 
                     <div className='flex gap-1.5'>
                       <button onClick={() => router.push(`/comment/${post.post_id}`)} className='text-white text-xl cursor-pointer'><FaRegComment /></button>
-                      <p>{post.like.length}</p>
+                      <p>{post.commentCount}</p>
                     </div>
                   </div>
                 </div>

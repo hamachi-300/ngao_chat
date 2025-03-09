@@ -1,12 +1,14 @@
 import clientPromise from "@/database/mongodb";
 
-export async function GET(request, {params}) {
+export async function GET(request) {
     try {
         const db = (await clientPromise).db(process.env.MONGO_DB);
         const collection = db.collection("comments");
 
-        console.log('request');
-        const comments = await collection.find().toArray();
+        const url = new URL(request.url);
+        const postId = url.searchParams.get("postId");
+
+        const comments = await collection.find(postId ? { post_id: parseInt(postId) } : {}).toArray();
 
         return Response.json(comments);
     } catch (error) {
