@@ -106,8 +106,6 @@ export default function Page({ }) {
 
                 const result = await response.json();
 
-                // Instead of reload, update the state to re-render the page with the new comment
-                setComments((prevComments) => [result, ...prevComments]);
                 setCommentMessage("");
                 setLoading(false);
             } catch (error) {
