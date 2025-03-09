@@ -26,7 +26,7 @@ export default function Navbar() {
 
                 {/* Centered Logo Text */}
                 <button className="text-4xl font-bold tracking-wide flex-1 justify-center text-center cursor-pointer" onClick={() => router.push("/home")}>
-                    <span className="text-2xl text-gray-200">Ngao Ngao</span> {/* Only the text */}
+                    <p className="text-2xl -mb-2 text-gray-200 text-glow animate-bounce">Ngao Ngao</p> {/* Only the text */}
                 </button>
 
                 {/* Profile Image with Dropdown Shadow at the top right */}
