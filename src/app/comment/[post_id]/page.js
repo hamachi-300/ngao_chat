@@ -131,7 +131,16 @@ export default function Page({ }) {
         <div className="flex justify-center items-center min-h-screen">
             <div className="bg-[#0c163d] w-200 min-h-screen relative pb-24">
                 <div className="w-full h-50 flex flex-col justify-between">
-                    <p className="ml-15 m-4 mt-10 text-white font-semibold text-3xl">{post.post_content}</p>
+                    <div className='flex flex-col ml-15 m-4 mt-7 gap-1.5 text-blue-300 hover:text-blue-200 transition-all duration-250 text-sm'>
+                        <button onClick={() => router.push("/home")}>
+                            <div className='flex items-center'>
+                                <IoCaretBackOutline /> 
+                                Back
+                            </div>
+                        </button>
+                        <p className=" text-white font-semibold text-3xl">{post.post_content}</p>
+                    </div>
+                    
                     <div className="flex flex-col ml-15 m-4 gap-2">
                         <div className="flex gap-1.5">
                             <button className="text-white text-2xl"><AiOutlineHeart /></button>
