@@ -104,8 +104,6 @@ export default function Page({ }) {
                     throw new Error("Error while posting comment");
                 }
 
-                const result = await response.json();
-
                 setCommentMessage("");
                 setLoading(false);
             } catch (error) {
