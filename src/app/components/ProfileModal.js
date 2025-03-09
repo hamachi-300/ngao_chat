@@ -10,6 +10,7 @@ export default function ProfileModal({ session }) {
     const [currentInput, setCurrentInput] = useState(session.user.username);
     const ref = useRef(null);
 
+
     if (!session) return null;
 
     const toggleModal = () => {
@@ -21,15 +22,34 @@ export default function ProfileModal({ session }) {
         signOut(); // Perform the sign out action
     }
 
-    const handleEnter = (e) => {
+    async function handleEnter(e) {
 
         if (e.key === 'Enter') {
             let name = e.target.value;
 
-            if (name.length > 10) {
+            if (name.length > 15) {
                 setTextColor('text-red-400');
             } else {
-                setUsername(name);
+
+                try {
+                    await fetch('/api/data/user', {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                        },
+                        body: JSON.stringify({ user_id: session.user.id, username: name })
+                    });
+
+                    session.user.username = name;
+
+                    setUsername(name);
+                    setTextColor('text-gray-500');
+
+                } catch (error) {
+                    setTextColor('text-red-400');
+                    console.log(error);
+                }
+
             }
         } else {
             setTextColor('text-gray-500');
@@ -43,11 +63,11 @@ export default function ProfileModal({ session }) {
                 alt="Profile"
                 className="w-11 h-11 rounded-full cursor-pointer shadow-lg hover:scale-110 transition-transform"
                 referrerPolicy="no-referrer"
-                onClick={() => toggleModal()}
+                onClick={() => {toggleModal(); setUsername(session.user.username)}}
             />
 
             {modal && (
-                <div onClick={() => {toggleModal(); setCurrentInput(username)}} className="fixed inset-0 flex items-center justify-center z-50 bg-gray-800/70 bg-opacity-60">
+                <div onClick={() => {toggleModal(); setTextColor('text-gray-500'); setCurrentInput(username)}} className="fixed inset-0 flex items-center justify-center z-50 bg-gray-800/70 bg-opacity-60">
                     <div
                         onClick={(e) => e.stopPropagation()}
                         className="bg-white p-8 rounded-lg shadow-xl w-96 max-w-md space-y-4"
@@ -68,7 +88,7 @@ export default function ProfileModal({ session }) {
                                         </div>
                                         :
                                         <div className="flex">
-                                            <input value={currentInput} onChange={(e) => setCurrentInput(e.target.value)} onKeyDown={handleEnter} ref={ref} className={`text-sm ${textColor} w-40 focus:outline-none duration-150 transition-all`} placeholder="บอกชื่อของคุณกับเรา..." />
+                                            <input value={currentInput || ""} onChange={(e) => setCurrentInput(e.target.value)} onKeyDown={handleEnter} ref={ref} className={`text-sm ${textColor} w-40 focus:outline-none duration-150 transition-all`} placeholder="บอกชื่อของคุณกับเรา..." />
                                             <div onClick={() => { if (ref.current) ref.current.focus(); }} className="text-gray-600 cursor-text"><MdOutlineEdit /></div>
                                         </div>
                                 }

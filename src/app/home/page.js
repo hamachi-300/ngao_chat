@@ -4,6 +4,8 @@ import { signOut, useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import PostModal from './modal/PostModal';
+import { AiOutlineHeart } from "react-icons/ai";
+import { FaRegComment } from "react-icons/fa";
 
 const Home = () => {
   const [posts, setPosts] = useState([]);
@@ -56,30 +58,39 @@ const Home = () => {
   return (
     status === 'authenticated' &&
     session?.user && (
-      <div className='p-6 max-w-4xl mx-auto'>
-        <div className='flex justify-between mb-6'>
-          
-            <div className='flex gap-4'>
-                <PostModal user_id={session.user.id} />
-            </div>
-        </div>
+      <>
+        <div className='p-6 max-w-4xl mx-auto'>
 
-        <ul className='space-y-4'>
-          {posts.map((post, id) => (
-            <li key={id} className='bg-[#9290C3] p-4 rounded shadow-md'>
-              <p className='mb-2 font-bold text-white'>{post.post_content}</p>
-              <div className='flex gap-2'>
-                <button className='text-green-600 hover:text-green-700'>
-                  Like {post.like}
-                </button>
-                <button className='text-blue-600 hover:text-blue-700'>
-                  Comment
-                </button>
-              </div>
-            </li>
-          ))}
-        </ul>
-      </div>
+          <ul className='space-y-6'>
+            {posts.map((post, id) => (
+              <li key={id} className='  shadow-md'>
+
+                <div className='flex flex-col gap-1.5'>
+                  <div className='bg-[#9290C3] p-4 shadow-md rounded-md flex flex-col justify-between '>
+                    <p className='mb-2 font-bold text-white'>{post.post_content}</p>
+                  </div>
+                  <div className='flex gap-4'>
+
+                    <div className='flex gap-1.5'>
+                      <button className='text-2xl'><AiOutlineHeart /></button>
+                      <p>{post.like}</p>
+                    </div>
+
+                    <button className='text-white text-xl'><FaRegComment /></button>
+                  </div>
+                </div>
+
+
+              </li>
+            ))}
+          </ul>
+        </div>
+        <div className='fixed inset-0 flex items-end justify-end right-7 bottom-12 shadow-white'>
+
+          <PostModal user_id={session.user.id} />
+        </div>
+      </>
+
     )
   );
 };

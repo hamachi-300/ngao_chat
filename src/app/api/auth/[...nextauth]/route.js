@@ -2,6 +2,7 @@ import NextAuth from 'next-auth'
 import GoogleProvider from 'next-auth/providers/google'
 import { MongoDBAdapter } from "@auth/mongodb-adapter"
 import client from "@/database/mongodb"
+import { ObjectId } from 'mongodb';
 
 // https://discord.com/developers/docs/topics/oauth2#shared-resources-oauth2-scopes
 
@@ -16,8 +17,7 @@ const handler = NextAuth({
             id: profile.sub, 
             name: profile.name,
             email: profile.email,
-            image: profile.picture,
-            username: null
+            image: profile.picture
           };
         }
     })
@@ -38,6 +38,11 @@ const handler = NextAuth({
     jwt: async ({ user, token }) => {
       if (user) {
         token.uid = user.id;
+
+        const collection = (await client).db().collection('users');
+        const dbUser = await collection.findOne({ _id: ObjectId.createFromHexString(user.id) });
+    
+        token.username = dbUser?.username || null;
       }
       return token;
     },
