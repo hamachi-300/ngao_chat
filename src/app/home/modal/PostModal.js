@@ -3,13 +3,10 @@
 import React, { useState } from "react";
 import { AiFillEdit } from "react-icons/ai";
 
-export default function PostModal({ user_id }) {
-  const [modal, setModal] = useState(false);
+export default function PostModal({ user_id, modal, toggleModal }) {
   const [content, setContent] = useState("");
 
-  const toggleModal = () => {
-    setModal(!modal);
-  };
+  
 
   const submitPost = async () => {
     const url = "/api/data/posts";
@@ -33,7 +30,7 @@ export default function PostModal({ user_id }) {
 
       const result = await response.json();
       console.log("Data posted successfully:", result);
-      setModal(!modal);
+      toggleModal();
       window.location.reload();
     } catch (error) {
       console.log("Error:", error);
@@ -56,12 +53,13 @@ export default function PostModal({ user_id }) {
 
       {modal && (
         <div className="fixed inset-0 flex items-center justify-center bg-gray-800/70 z-50">
+          {/* Click outside the modal to close it */}
           <div
+            className="absolute inset-0"
             onClick={toggleModal}
-            className="absolute inset-0 cursor-pointer"
           ></div>
 
-          <div className="relative bg-indigo-500 p-6 rounded-2xl shadow-lg z-10 max-w-lg w-full text-white">
+          <div className="relative bg-indigo-500 p-6 rounded-2xl shadow-lg z-60 max-w-lg w-full text-white">
             <h2 className="text-2xl mb-4 font-bold">Post</h2>
             <textarea
               className="w-full h-32 p-2 mb-4 rounded-md bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"

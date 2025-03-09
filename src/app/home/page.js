@@ -12,7 +12,12 @@ const Home = () => {
   const [error, setError] = useState(null);
   const [isLoading, setLoading] = useState(true);
   const { data: session, status } = useSession();
+  const [modal, setModal] = useState(false);
   const router = useRouter();
+
+  const toggleModal = () => {
+    setModal(!modal);
+  };
 
   const getPosts = async () => {
     const response = await fetch('/api/data/posts');
@@ -88,7 +93,10 @@ const Home = () => {
     status === 'authenticated' &&
     session?.user && (
       <>
-        <div className='p-6 max-w-4xl mx-auto' onClick={(e) => e.stopPropagation()}>
+        <div className='p-6 max-w-4xl mx-auto' onClick={(e) => {
+            console.log('0000');
+
+          }}>
 
           <ul className='space-y-6'>
             {posts.map((post, id) => (
@@ -116,8 +124,10 @@ const Home = () => {
           
         </div>
         
-        <div onClick={(e) => e.stopPropagation()} className='fixed inset-0 flex items-end justify-end right-7 bottom-12 shadow-white'>
-          <PostModal user_id={session.user.id} />
+        <div
+          className='fixed items-end justify-end right-7 bottom-12 shadow-white'
+        >
+          <PostModal modal={modal} toggleModal={toggleModal} user_id={session.user.id} />
         </div>
       </>
 
