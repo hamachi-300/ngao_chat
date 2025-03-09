@@ -1,6 +1,6 @@
 'use client';
 
-import { signOut, useSession } from 'next-auth/react';
+import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import PostModal from './modal/PostModal';
@@ -55,15 +55,44 @@ const Home = () => {
 
   if (!session) return null;
 
+  const increaseLikePost = async (post) => {
+    const likeUrl = `/api/data/like/post/${post.post_id}`;
+    
+    try {
+        
+        // Now send the updated like count to the server
+        const dataLike = {
+            like: post.like
+        };
+
+        const response = await fetch(likeUrl, {
+            method: "PATCH",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(dataLike)
+        });
+
+        if (!response.ok) {
+            throw new Error("Failed to update like");
+        }
+
+        console.log("Like increased successfully!");
+        
+        window.location.reload();
+
+    } catch (error) {
+        console.error("Error increasing like:", error);
+    }
+  };
+
   return (
     status === 'authenticated' &&
     session?.user && (
       <>
-        <div className='p-6 max-w-4xl mx-auto'>
+        <div className='p-6 max-w-4xl mx-auto' onClick={(e) => e.stopPropagation()}>
 
           <ul className='space-y-6'>
             {posts.map((post, id) => (
-              <li key={id} className='  shadow-md'>
+              <li key={id} onClick={() => console.log('1111')} className='  shadow-md'>
 
                 <div className='flex flex-col gap-1.5'>
                   <div className='bg-[#9290C3] p-4 shadow-md rounded-md flex flex-col justify-between '>
@@ -76,7 +105,7 @@ const Home = () => {
                       <p>{post.like}</p>
                     </div>
 
-                    <button className='text-white text-xl'><FaRegComment /></button>
+                    <button onClick={() => console.log('2222')} className='text-white text-xl cursor-pointer'><FaRegComment /></button>
                   </div>
                 </div>
 
@@ -84,9 +113,10 @@ const Home = () => {
               </li>
             ))}
           </ul>
+          
         </div>
-        <div className='fixed inset-0 flex items-end justify-end right-7 bottom-12 shadow-white'>
-
+        
+        <div onClick={(e) => e.stopPropagation()} className='fixed inset-0 flex items-end justify-end right-7 bottom-12 shadow-white'>
           <PostModal user_id={session.user.id} />
         </div>
       </>

@@ -5,238 +5,242 @@ import { useParams, useRouter } from "next/navigation";
 import ProfileModal from "../../main/modal/ProfileModal";
 
 export default function Page({}) {
-    const cur_email = "sirawut@gmail.com"; // current user's email
-    const router = useRouter(); // for navigation
-    const params = useParams(); // get params to client component
-    const postId = params.post_id; // Post ID from URL params
+    // const cur_email = "sirawut@gmail.com"; // current user's email
+    // const router = useRouter(); // for navigation
+    // const params = useParams(); // get params to client component
+    // const postId = params.post_id; // Post ID from URL params
 
-    const [post, setPost] = useState({});
-    const [comments, setComments] = useState([]);
-    const [isLoading, setLoading] = useState(true);
-    const [curUser, setCurUser] = useState({});
-    const [comment, setComment] = useState("");
-    const [author, setAuthor] = useState({});
+    // const [post, setPost] = useState({});
+    // const [comments, setComments] = useState([]);
+    // const [isLoading, setLoading] = useState(true);
+    // const [curUser, setCurUser] = useState({});
+    // const [comment, setComment] = useState("");
+    // const [author, setAuthor] = useState({});
 
-    const getUsers = async () => {
-        const response = await fetch('/api/data/users');
-        if (!response.ok) {
-            throw new Error('Failed to fetch users');
-        }
-        const users = await response.json();
-        const cur_user = users.find(u => u.email === cur_email);
-        if (cur_user == null) {
-            router.push("/login"); // Redirect to login if the user is not found
-        } else {
-            setCurUser(cur_user);
-        }
-    };
+    // const getUsers = async () => {
+    //     const response = await fetch('/api/data/users');
+    //     if (!response.ok) {
+    //         throw new Error('Failed to fetch users');
+    //     }
+    //     const users = await response.json();
+    //     const cur_user = users.find(u => u.email === cur_email);
+    //     if (cur_user == null) {
+    //         router.push("/login"); // Redirect to login if the user is not found
+    //     } else {
+    //         setCurUser(cur_user);
+    //     }
+    // };
 
-    const getPost = async () => {
-        try {
-            let response = await fetch(`/api/data/posts/${postId}`);
-            if (!response.ok) {
-                throw new Error("Failed to fetch post");
-            }
-            const postData = await response.json();
-            setPost(postData);
-        } catch (error) {
-            console.error("Error fetching post:", error);
-        }
-    };
+    // const getPost = async () => {
+    //     try {
+    //         let response = await fetch(`/api/data/posts/${postId}`);
+    //         if (!response.ok) {
+    //             throw new Error("Failed to fetch post");
+    //         }
+    //         const postData = await response.json();
+    //         setPost(postData);
+    //     } catch (error) {
+    //         console.error("Error fetching post:", error);
+    //     }
+    // };
 
-    const getAuthor = async () => {
-        try {
-            const response = await fetch(`/api/data/users/${post.author_id}`);
-            if (!response.ok) {
-                throw new Error("Failed to fetch author");
-            }
-            const authorData = await response.json();
-            setAuthor(authorData);
-        } catch (error) {
-            console.error("Error fetching author:", error);
-        }
-    };
+    // const getAuthor = async () => {
+    //     try {
+    //         const response = await fetch(`/api/data/users/${post.author_id}`);
+    //         if (!response.ok) {
+    //             throw new Error("Failed to fetch author");
+    //         }
+    //         const authorData = await response.json();
+    //         setAuthor(authorData);
+    //     } catch (error) {
+    //         console.error("Error fetching author:", error);
+    //     }
+    // };
 
-    const getComments = async () => {
-        try {
-            const response = await fetch(`/api/data/comments`);
-            if (!response.ok) {
-                throw new Error("Failed to fetch comments");
-            }
-            let commentsData = await response.json();
-            commentsData = commentsData.filter(comment => comment.post_id == postId);
-            setComments(commentsData);
-        } catch (error) {
-            console.error("Error fetching comments:", error);
-        }
-    };
+    // const getComments = async () => {
+    //     try {
+    //         const response = await fetch(`/api/data/comments`);
+    //         if (!response.ok) {
+    //             throw new Error("Failed to fetch comments");
+    //         }
+    //         let commentsData = await response.json();
+    //         commentsData = commentsData.filter(comment => comment.post_id == postId);
+    //         setComments(commentsData);
+    //     } catch (error) {
+    //         console.error("Error fetching comments:", error);
+    //     }
+    // };
 
-    const handleComment = (event) => {
-        setComment(event.target.value);
-    };
+    // const handleComment = (event) => {
+    //     setComment(event.target.value);
+    // };
 
-    const submitComment = async () => {
-        const url = "/api/data/comments";
-        const data = {
-            post_id: parseInt(postId),
-            author_id: curUser.user_id,
-            comment_content: comment
-        };
-        try {
-            if (curUser.user_id !== post.author_id) {
-                const notifyUrl = `/api/data/increase_notify/${author.user_id}`;
-                console.log(notifyUrl);
-                const dataAuthor = {
-                    notify: author.notify
-                }
-                const response = await fetch(notifyUrl, {
-                    method: "PATCH",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify(dataAuthor)
-                });
+    // const submitComment = async () => {
+    //     const url = "/api/data/comments";
+    //     const data = {
+    //         post_id: parseInt(postId),
+    //         author_id: curUser.user_id,
+    //         comment_content: comment
+    //     };
+    //     try {
+    //         if (curUser.user_id !== post.author_id) {
+    //             const notifyUrl = `/api/data/increase_notify/${author.user_id}`;
+    //             console.log(notifyUrl);
+    //             const dataAuthor = {
+    //                 notify: author.notify
+    //             }
+    //             const response = await fetch(notifyUrl, {
+    //                 method: "PATCH",
+    //                 headers: { "Content-Type": "application/json" },
+    //                 body: JSON.stringify(dataAuthor)
+    //             });
 
-                if (!response.ok) {
-                    throw new Error("Failed to update notify");
-                }
-            }
-            const response = await fetch(url, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify(data)
-            });
+    //             if (!response.ok) {
+    //                 throw new Error("Failed to update notify");
+    //             }
+    //         }
+    //         const response = await fetch(url, {
+    //             method: "POST",
+    //             headers: {
+    //                 "Content-Type": "application/json"
+    //             },
+    //             body: JSON.stringify(data)
+    //         });
 
-            if (!response.ok) {
-                throw new Error("Error while posting comment");
-            }
+    //         if (!response.ok) {
+    //             throw new Error("Error while posting comment");
+    //         }
 
-            const result = await response.json();
-            console.log('Data posted successfully:', result);
+    //         const result = await response.json();
+    //         console.log('Data posted successfully:', result);
 
-            // Instead of reload, update the state to re-render the page with the new comment
-            setComments((prevComments) => [result, ...prevComments]);
-            setComment(""); // Clear the input after submission
-        } catch (error) {
-            console.log("Error:", error);
-        }
-    };
+    //         // Instead of reload, update the state to re-render the page with the new comment
+    //         setComments((prevComments) => [result, ...prevComments]);
+    //         setComment(""); // Clear the input after submission
+    //     } catch (error) {
+    //         console.log("Error:", error);
+    //     }
+    // };
 
-    const increaseLike = async (comment) => {
-        const likeUrl = `/api/data/like/comment/${comment.comment_id}`;
+    // const increaseLike = async (comment) => {
+    //     const likeUrl = `/api/data/like/comment/${comment.comment_id}`;
         
-        try {
+    //     try {
             
-            // Now send the updated like count to the server
-            const dataLike = {
-                like: comment.like
-            };
+    //         // Now send the updated like count to the server
+    //         const dataLike = {
+    //             like: comment.like
+    //         };
     
-            const response = await fetch(likeUrl, {
-                method: "PATCH",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(dataLike)
-            });
+    //         const response = await fetch(likeUrl, {
+    //             method: "PATCH",
+    //             headers: { "Content-Type": "application/json" },
+    //             body: JSON.stringify(dataLike)
+    //         });
     
-            if (!response.ok) {
-                throw new Error("Failed to update like");
-            }
+    //         if (!response.ok) {
+    //             throw new Error("Failed to update like");
+    //         }
     
-            console.log("Like increased successfully!");
+    //         console.log("Like increased successfully!");
             
-            window.location.reload();
+    //         window.location.reload();
     
-            // Optionally, you can fetch the updated comment data again or update the local state if you're managing it
-        } catch (error) {
-            console.error("Error increasing like:", error);
-        }
-    };
+    //         // Optionally, you can fetch the updated comment data again or update the local state if you're managing it
+    //     } catch (error) {
+    //         console.error("Error increasing like:", error);
+    //     }
+    // };
 
-    const increaseLikePost = async (post) => {
-        const likeUrl = `/api/data/like/post/${post.post_id}`;
+    // const increaseLikePost = async (post) => {
+    //     const likeUrl = `/api/data/like/post/${post.post_id}`;
         
-        try {
+    //     try {
             
-            // Now send the updated like count to the server
-            const dataLike = {
-                like: post.like
-            };
+    //         // Now send the updated like count to the server
+    //         const dataLike = {
+    //             like: post.like
+    //         };
     
-            const response = await fetch(likeUrl, {
-                method: "PATCH",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(dataLike)
-            });
+    //         const response = await fetch(likeUrl, {
+    //             method: "PATCH",
+    //             headers: { "Content-Type": "application/json" },
+    //             body: JSON.stringify(dataLike)
+    //         });
     
-            if (!response.ok) {
-                throw new Error("Failed to update like");
-            }
+    //         if (!response.ok) {
+    //             throw new Error("Failed to update like");
+    //         }
     
-            console.log("Like increased successfully!");
+    //         console.log("Like increased successfully!");
             
-            window.location.reload();
+    //         window.location.reload();
     
-        } catch (error) {
-            console.error("Error increasing like:", error);
-        }
-    };
+    //     } catch (error) {
+    //         console.error("Error increasing like:", error);
+    //     }
+    // };
     
 
-    useEffect(() => {
-        const fetchData = async () => {
-            await getUsers();
-            await getPost();
-            await getComments();
-            setLoading(false);
-        };
-        fetchData();
-    }, [postId]);
+    // useEffect(() => {
+    //     const fetchData = async () => {
+    //         await getUsers();
+    //         await getPost();
+    //         await getComments();
+    //         setLoading(false);
+    //     };
+    //     fetchData();
+    // }, [postId]);
     
-    useEffect(() => {
-        const fetchData = async () => {
-            await getAuthor();
-        }
-        if (post.author_id) {
-            fetchData();
-        }
-    }, [post.author_id]);
+    // useEffect(() => {
+    //     const fetchData = async () => {
+    //         await getAuthor();
+    //     }
+    //     if (post.author_id) {
+    //         fetchData();
+    //     }
+    // }, [post.author_id]);
 
-    if (isLoading) return <div>Loading...</div>;
+    // if (isLoading) return <div>Loading...</div>;
 
-    console.log(author)
+    // console.log(author)
 
     return (
-        <div>
-            <ul id="nav-bar">
-                <li><a href="/main">;-;</a></li>
-                <li>Comment</li>
-                <li><ProfileModal user={curUser} /></li>
-            </ul>
-            <div>=====================================================================</div>
-            <p>{post.post_content}</p>
-            <button onClick={() => increaseLikePost(post)}>Likes: {post.like}</button>
-            <div>=====================================================================</div>
-            <h3>Comments</h3>
-            {comments.length > 0 ? (
-                comments.map((comment, id) => (
-                    <div key={id}>
-                        ----------------------------------------
-                        <p>{comment.comment_content}</p>
-                        <button onClick={() => increaseLike(comment)}>Likes: {comment.like}</button>
-                    </div>
-                ))
-            ) : (
-                <div>No comments yet.</div>
-            )}
-            <div className="post-comment">
-                <input
-                    type="text"
-                    placeholder="Comment something..."
-                    value={comment}
-                    onChange={handleComment}
-                />
-                <button onClick={submitComment}>&#8594;</button>
-            </div>
-        </div>
+
+        <>
+        </>
+
+        // <div>
+        //     <ul id="nav-bar">
+        //         <li><a href="/main">;-;</a></li>
+        //         <li>Comment</li>
+        //         <li><ProfileModal user={curUser} /></li>
+        //     </ul>
+        //     <div>=====================================================================</div>
+        //     <p>{post.post_content}</p>
+        //     <button onClick={() => increaseLikePost(post)}>Likes: {post.like}</button>
+        //     <div>=====================================================================</div>
+        //     <h3>Comments</h3>
+        //     {comments.length > 0 ? (
+        //         comments.map((comment, id) => (
+        //             <div key={id}>
+        //                 ----------------------------------------
+        //                 <p>{comment.comment_content}</p>
+        //                 <button onClick={() => increaseLike(comment)}>Likes: {comment.like}</button>
+        //             </div>
+        //         ))
+        //     ) : (
+        //         <div>No comments yet.</div>
+        //     )}
+        //     <div className="post-comment">
+        //         <input
+        //             type="text"
+        //             placeholder="Comment something..."
+        //             value={comment}
+        //             onChange={handleComment}
+        //         />
+        //         <button onClick={submitComment}>&#8594;</button>
+        //     </div>
+        // </div>
     );
 }
