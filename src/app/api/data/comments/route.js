@@ -38,7 +38,8 @@ export async function POST(request) {
             post_id: body.post_id,
             author_id: body.author_id,
             comment_content: body.comment_content,
-            like: 0
+            like: 0,
+            is_cleared: false
         });
         return Response.json({ message: "insert successed", content: body }, { status: 200 });
     } catch (error) {
