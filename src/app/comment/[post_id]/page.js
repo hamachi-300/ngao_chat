@@ -73,39 +73,7 @@ export default function Page({ }) {
             }
             let commentsData = await response.json();
             commentsData = commentsData.filter(comment => comment.post_id == postId);
-    
-            // Extract unique author_ids from comments
-            const authorIds = [...new Set(commentsData.map(comment => comment.author_id))];
-    
-            // Fetch usernames for all authors
-            const authorResponse = await fetch(`/api/data/user`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({ author_ids: authorIds }) // Send the list of author IDs to fetch usernames
-            });
-    
-            if (!authorResponse.ok) {
-                throw new Error("Failed to fetch authors");
-            }
-    
-            const authorsData = await authorResponse.json();
-    
-            // Map author ID to username for quick lookup
-            const authorMap = authorsData.reduce((acc, author) => {
-                acc[author.id] = author.username;
-                return acc;
-            }, {});
-    
-            // Add username to each comment
-            const commentsWithUsernames = commentsData.map(comment => ({
-                ...comment,
-                username: authorMap[comment.author_id],
-            }));
-    
-            setComments(commentsWithUsernames);
-    
+            setComments(commentsData);
         } catch (error) {
             console.error("Error fetching comments:", error);
         }
