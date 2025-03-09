@@ -1,10 +1,11 @@
 import clientPromise from "@/database/mongodb";
 
-export async function GET() {
+export async function GET(request, {params}) {
     try {
         const db = (await clientPromise).db(process.env.MONGO_DB);
         const collection = db.collection("comments");
 
+        console.log('request');
         const comments = await collection.find().toArray();
 
         return Response.json(comments);

@@ -118,11 +118,12 @@ const Home = () => {
                       <p>{post.like.length}</p>
                     </div>
 
-                    <button onClick={() => router.push(`/comment/${post.post_id}`)} className='text-white text-xl cursor-pointer'><FaRegComment /></button>
+                    <div className='flex gap-1.5'>
+                      <button onClick={() => router.push(`/comment/${post.post_id}`)} className='text-white text-xl cursor-pointer'><FaRegComment /></button>
+                      <p>{post.like.length}</p>
+                    </div>
                   </div>
                 </div>
-
-
               </li>
             ))}
           </ul>
