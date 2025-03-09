@@ -52,7 +52,7 @@ export default function Page({ }) {
 
             console.log('Author: ', post.author_id);
 
-            const response = await fetch(`/api/data/user/${post.author_id}`);
+            const response = await fetch(`/api/data/user/users/${post.author_id}`);
             if (!response.ok) {
                 throw new Error("Failed to fetch author");
             }
