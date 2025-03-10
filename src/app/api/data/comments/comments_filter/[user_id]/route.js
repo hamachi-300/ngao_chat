@@ -5,7 +5,7 @@ export async function GET(request, {params}) {
         const db = (await clientPromise).db(process.env.MONGO_DB);
         const collection = db.collection("comments");
 
-        const {post_id, user_id} = params;
+        const user_id = params.user_id;
         const comments = await collection
         .aggregate([
             {
