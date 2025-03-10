@@ -111,7 +111,7 @@ const Home = () => {
   };
 
   useEffect(() => {
-    if (!session) {
+    if (status === 'unauthenticated') {
       router.push('/login');
     }
   }, [status, router]);
@@ -222,10 +222,12 @@ const Home = () => {
                           <button 
                             className='py-1 rounded-md w-full text-left cursor-pointer'
                           >
-                            <div onClick={() => setConfirmModal(post.post_id)} className=' px-4 py-1 hover:bg-gray-200 flex gap-2 text-red-500 justify-center items-center text-center'>
-                              <FaRegTrashAlt />
-                              Delete
-                            </div>
+                            {
+                              <div onClick={() => setConfirmModal(post.post_id)} className=' px-4 py-1 hover:bg-gray-200 flex gap-2 text-red-500 justify-center items-center text-center'>
+                                <FaRegTrashAlt />
+                                Delete
+                              </div>
+                            }
                           </button>
                           
                         </div>

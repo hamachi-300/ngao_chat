@@ -17,7 +17,7 @@ export default function Navbar() {
 
     return (
         status === "authenticated" &&
-        session?.user && (
+        (
 
             <nav className="bg-indigo-500 fixed text-white px-8 py-4 flex items-center justify-center shadow-lg h-16 top-0 left-0 w-full z-50">
                 
