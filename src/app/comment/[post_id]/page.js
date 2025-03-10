@@ -210,7 +210,7 @@ export default function Page({ }) {
         });
 
         try {
-            const response = await fetch(`/api/data/comments/${comment.comment_id}`, {
+            const response = await fetch(`/api/data/comment/${comment.comment_id}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json'
