@@ -12,6 +12,7 @@ export default function YourPost() {
     const [posts, setPosts] = useState([]);
     const dropdownRef = useRef(null);
     const buttonRef = useRef(null);
+    const [active, setActive] = useState("Posts");
 
     const getPosts = async () => {
 
@@ -62,8 +63,9 @@ export default function YourPost() {
                 throw new Error(error);
             }
         }
-
     }
+
+    
 
     useEffect(() => {
         getPosts();
@@ -105,7 +107,6 @@ export default function YourPost() {
             <div 
                 ref={buttonRef}
                 className="relative group">
-                {/* Button with hover description */}
                 <div
                     className="text-white text-2xl hover:scale-110 hover:text-green-300 duration-150 transition-all shadow-md cursor-pointer"
                     onClick={toggleDropdown} // Toggle dropdown visibility on click
@@ -113,7 +114,6 @@ export default function YourPost() {
                     <IoEarthSharp />
                 </div>
 
-                {/* Hover text (tooltip) */}
                 <div
                     style={{ draggable: false }}
                     className="text-xs absolute left-1/2 w-20 transform -translate-x-1/2 mt-2 p-2 bg-[#0000008d] text-white rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"
@@ -122,24 +122,47 @@ export default function YourPost() {
                 </div>
             </div>
 
-            {/* Dropdown Menu with top-to-bottom wipe transition */}
             <div
                 ref={dropdownRef}
-                className={`absolute left-1/2 w-100 transform -translate-x-full mt-5 p-2
+                className={`absolute left-1/2 w-100 transform -translate-x-full mt-5
                     bg-[#9e97ff] bg-opacity-90 border-[#070F2B] border-4 rounded-3xl
                     text-white transition-all duration-250 ${enable ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
                     }`}
-            // bg-gradient-to-br from-[#27f4ff] via-[#4f34ff] to-[#9b30ff]
-            // style={{ background: 'linear-gradient(to bottom right, rgba(39, 244, 180, 0.7), rgba(79, 52, 180, 0.7), rgba(155, 48, 180, 0.7))' }}
             >
-                {/* Add your dropdown content here */}
                 <div className="flex flex-col justify-center items-center gap-4">
-                    <div className="flex flex-col justify-center items-center w-full gap-3">
-                        <p style={{ textShadow: '0px 2px 2px rgba(0,0,0,0.5)' }} className="font-bold text-center mt-2.5">Your Posts</p>
-                        <div className="w-[90%] bg-[#b2f0ff] h-1 rounded-full"></div>
+                    <div className="bg-[#7775ff] rounded-t-3xl flex flex-col justify-center items-center w-full gap-3 p-3">
+                        <p
+                            style={{ textShadow: "0px 2px 2px rgba(0,0,0,0.5)" }}
+                            className="font-bold text-center"
+                        >
+                            Your Posts
+                        </p>
+                        <div className="w-[80%] bg-[#aaf5ff] h-0.5 rounded-full mb-3"></div>
+
+                        <div className="relative flex w-[80%] bg-[#00000038] h-5 mb-1 rounded-full overflow-hidden">
+                            <div
+                                className={`absolute top-0 h-full bg-[#ffffff70] rounded-full shadow-md transition-all duration-300 ${
+                                    active === "Posts" ? "left-0 w-[50%]" : "left-[50%] w-[50%]"
+                                }`}
+                            ></div>
+
+                            <button
+                                onClick={() => setActive("Posts")}
+                                className="relative w-[50%] text-center text-xs z-10"
+                            >
+                                Posts
+                            </button>
+
+                            <button
+                                onClick={() => setActive("Comments")}
+                                className="relative w-[50%] text-center text-xs z-10"
+                            >
+                                Comments
+                            </button>
+                        </div>
                     </div>
                     <div className="flex flex-col w-full">
-                        <ul className="pr-1.5 space-y-2.5 overflow-auto max-h-[400px] scrollbar-custom">
+                        <ul className="m-2 pr-1.5 space-y-2.5 overflow-auto max-h-[400px] scrollbar-custom">
                             {posts.map((posts, id) => (
                                 <li key={id} onClick={() => scrollToPost(posts.post_id)} className="cursor-pointer">
                                     <div className="flex gap-1 bg-[#00000058] hover:bg-[#0000008b] transition-color duration-150 rounded shadow-md">
