@@ -6,6 +6,7 @@ import { ObjectId } from "mongodb";
 // increase notify
 export async function PATCH(request, { params }) {
     try {
+
         // Parse the request body as JSON (make sure content type is JSON)
         const updateFields = await request.json();
   
@@ -24,10 +25,12 @@ export async function PATCH(request, { params }) {
             updateFields.notify = 1;
         }
   
+        console.log(updateFields.notify)
+
         // Perform the update operation
         const result = await collection.updateOne(
             { _id: ObjectId.createFromHexString(params.user_id) },
-            { $set: updateFields }
+            { $set: {notify: updateFields.notify} }
         );
   
         // Check if the update was successful

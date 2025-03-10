@@ -5,6 +5,8 @@ import clientPromise from "@/database/mongodb";
 // clear post
 export async function PATCH(request, { params }) {
     try {
+
+        console.log("testttttttttttttttttttttttttttttttttttttttttt")
         // Connect to the database
         const db = (await clientPromise).db(process.env.MONGO_DB);
         const collection = db.collection("comments");

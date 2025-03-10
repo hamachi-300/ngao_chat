@@ -3,27 +3,18 @@
 import clientPromise from "@/database/mongodb";
 import { ObjectId } from "mongodb";
 
-// increase notify
+// reset notify
 export async function PATCH(request, { params }) {
     try {
-        // Parse the request body as JSON (make sure content type is JSON)
-        const updateFields = await request.json();
-  
-        if (!updateFields) {
-            return new Response("Invalid input data", { status: 400 });
-        }
-  
+
         // Connect to the database
         const db = (await clientPromise).db(process.env.MONGO_DB);
         const collection = db.collection("users");
-  
-        // reset the notify field 
-        updateFields.notify = 0;
-  
+    
         // Perform the update operation
         const result = await collection.updateOne(
             { _id: ObjectId.createFromHexString(params.user_id) },
-            { $set: updateFields }
+            { $set: {notify: 0} }
         );
   
         // Check if the update was successful

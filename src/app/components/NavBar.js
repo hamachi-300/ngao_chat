@@ -7,7 +7,7 @@ import NotifyModal from "./NotifyModal";
 
 export default function Navbar() {
     const pathname = usePathname();
-    const { data: session, status } = useSession();
+    const { data: session, status, update } = useSession();
     const router = useRouter();
 
     if (pathname === "/login") {
@@ -21,7 +21,7 @@ export default function Navbar() {
             <nav className="bg-indigo-500 fixed text-white px-8 py-4 flex items-center justify-center shadow-lg h-16 top-0 left-0 w-full z-50">
                 
                 <button className="absolute left-8">
-                    <NotifyModal session={session}/>
+                    <NotifyModal session={session} update={update}/>
                 </button>
 
                 {/* Centered Logo Text */}

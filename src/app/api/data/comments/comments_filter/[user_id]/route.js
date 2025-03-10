@@ -21,7 +21,8 @@ export async function GET(request, {params}) {
                 $match: {
                     "postDetails.author_id": user_id, 
                     // comments not include comments of owner post
-                    "author_id": { $ne: user_id }
+                    "author_id": { $ne: user_id },
+                    "is_cleared": false
                 } 
             }, // Filter by author_id
         ])

@@ -131,7 +131,20 @@ export default function Page({ }) {
             };
 
             try {
-                const response = await fetch(url, {
+                // increase notify for author post
+                let response = await fetch(`/api/data/notify/increase_notify/${author._id}`, {
+                    method: "PATCH",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(author),
+                });
+
+                if (!response.ok) {
+                    throw new Error("Error while posting comment");
+                }
+
+                response = await fetch(url, {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json"
