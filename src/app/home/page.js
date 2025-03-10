@@ -141,7 +141,7 @@ const Home = () => {
     }
   }
 
-  async function handleLike(post) {
+  async function like(post) {
 
     post.like.push(session.user.id);
 
@@ -198,7 +198,7 @@ const Home = () => {
                       <button onClick={() => {
                         
                         if (!liked.includes(post.post_id)) {
-                          handleLike(post);
+                          like(post);
                         } else { 
                           unlike(post);
                         }
@@ -210,7 +210,7 @@ const Home = () => {
                         <AiOutlineHeart />
 
                       </button>
-                      <p>{post.like.length}</p>
+                      <p className='duration-250 transition-all'>{post.like.length}</p>
                     </div>
 
                     <div className='flex gap-1.5'>
