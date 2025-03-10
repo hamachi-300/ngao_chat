@@ -60,7 +60,7 @@ const Home = () => {
             setLiked((prev) => [...prev, post.post_id]);
           }
 
-          const commentResponse = await fetch(`/api/data/comments?postId=${post.post_id}`);
+          const commentResponse = await fetch(`/api/data/comment?postId=${post.post_id}`);
 
           if (!commentResponse.ok) {
             console.warn(`Failed to fetch comments for post ${post.post_id}`);
