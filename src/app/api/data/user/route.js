@@ -17,11 +17,4 @@ export async function POST(request) {
     } catch (error) {
         return Response.json({ Error: error }, { status: 500 });
     }
-    
-    
 }
-
-
-
-
-
