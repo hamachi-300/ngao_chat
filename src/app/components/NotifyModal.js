@@ -28,7 +28,7 @@ export default function NotifyModal({ session }) {
         }
     }
 
-    const getPost = async () => {
+    const getPosts = async () => {
         try {
             const response = await fetch(`/api/data/posts`);
 
@@ -37,7 +37,10 @@ export default function NotifyModal({ session }) {
             }
 
             let postsData = await response.json();
-            setComments(commentsData);
+            postsData = postsData.filter(post => post.author_id == user_id);
+            setPosts(postsData);
+
+            console.log(postsData);
             console.log(`fetch post success!!`)
         } catch (error) {
             console.log("Error:", error);
@@ -48,6 +51,7 @@ export default function NotifyModal({ session }) {
     useEffect(()=>{
         const fetch = async () => {
             await getComments();
+            await getPosts();
         }
         fetch()
     }, []);
@@ -73,7 +77,7 @@ export default function NotifyModal({ session }) {
                                 comments.map((comment, id) => (
                                     <div className="pb-5" key={id}>
                                         <div className="text-2xl text-left">
-                                            Post
+                                            {posts.find(post => post.post_id == comment.post_id)?.post_content || "Post content not found"}
                                         </div>
                                         <div className="text-lg text-left m-2">
                                             {comment.comment_content}
