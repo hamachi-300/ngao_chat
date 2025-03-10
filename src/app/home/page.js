@@ -15,6 +15,7 @@ const Home = () => {
   const [modal, setModal] = useState(false);
   const [liked, setLiked] = useState([]);
   const router = useRouter();
+  const [refresh, setRefresh] = useState("");
 
   const toggleModal = () => {
     setModal(!modal);
@@ -111,7 +112,7 @@ const Home = () => {
       };
       fetchPosts();
     }
-  }, [status]);
+  }, [status, refresh]);
 
   async function unlike(post) {
 
@@ -227,10 +228,10 @@ const Home = () => {
         <div
           className='fixed items-end justify-end right-7 bottom-12 shadow-white'
         >
-          <PostModal modal={modal} toggleModal={toggleModal} user_id={session.user.id} />
+          <PostModal modal={modal} toggleModal={toggleModal} user_id={session.user.id} setRefresh={setRefresh} refresh={refresh}/>
         </div>
       </>
-
+      
     )
   );
 };

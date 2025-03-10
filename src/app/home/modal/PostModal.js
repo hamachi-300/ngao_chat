@@ -3,10 +3,9 @@
 import React, { useState } from "react";
 import { AiFillEdit } from "react-icons/ai";
 
-export default function PostModal({ user_id, modal, toggleModal }) {
+export default function PostModal({ user_id, modal, toggleModal , setRefresh, refresh}) {
   const [content, setContent] = useState("");
-
-  
+  const [postError, setPostError] = useState("");
 
   const submitPost = async () => {
     const url = "/api/data/posts";
@@ -16,6 +15,15 @@ export default function PostModal({ user_id, modal, toggleModal }) {
     };
 
     try {
+      // check post content
+      if (content.length == 0) {
+        setPostError("Error: No Content!!");
+        throw new Error ("No Content!!");
+      } 
+      if (content.length > 200){
+        setPostError("Error: Content are Exceeded!!");
+        throw new Error ("Content are Exceeded!!");
+      }
       const response = await fetch(url, {
         method: "POST",
         headers: {
@@ -31,8 +39,9 @@ export default function PostModal({ user_id, modal, toggleModal }) {
       const result = await response.json();
       console.log("Data posted successfully:", result);
       toggleModal();
-      window.location.reload();
+      setRefresh(!refresh)
     } catch (error) {
+
       console.log("Error:", error);
     }
   };
@@ -73,6 +82,9 @@ export default function PostModal({ user_id, modal, toggleModal }) {
             >
               Post Now...
             </button>
+            {postError!="" && (
+              <p className="text-[#EA5455] font-bold mt-3">{postError}</p>
+            )}
           </div>
         </div>
       )}
