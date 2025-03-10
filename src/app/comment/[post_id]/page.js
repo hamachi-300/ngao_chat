@@ -132,17 +132,19 @@ export default function Page({ }) {
             };
 
             try {
-                // increase notify for author post
-                let response = await fetch(`/api/data/notify/increase_notify/${author._id}`, {
-                    method: "PATCH",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify(author),
-                });
-
-                if (!response.ok) {
-                    throw new Error("Error while posting comment");
+                // increase notify for author post when it not post of author
+                let response = [];
+                if (session.user.id != post.author_id){
+                    response = await fetch(`/api/data/notify/increase_notify/${author._id}`, {
+                        method: "PATCH",
+                        headers: {
+                            "Content-Type": "application/json",
+                        },
+                        body: JSON.stringify(author),
+                    });
+                    if (!response.ok) {
+                        throw new Error("Error while posting comment");
+                    }
                 }
 
                 response = await fetch(url, {
