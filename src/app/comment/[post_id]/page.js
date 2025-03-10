@@ -234,7 +234,7 @@ export default function Page({ }) {
         setCommentLiked((prev) => [...prev, comment.comment_id]);
 
         try {
-            const response = await fetch(`/api/data/comments/${comment.comment_id}`, {
+            const response = await fetch(`/api/data/comment/${comment.comment_id}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json'
