@@ -57,7 +57,6 @@ const Home = () => {
         postsData.map(async (post) => {
 
           if (post.like.includes(session.user.id)) {
-
             setLiked((prev) => [...prev, post.post_id]);
           }
 
@@ -203,7 +202,7 @@ const Home = () => {
                           unlike(post);
                         }
 
-                      }} className={`text-2xl hover:scale-110 ease-out transition-transform duration:150 
+                      }} className={`cursor-pointer text-2xl hover:scale-110 ease-out transition-transform duration:150 
                       ${liked.includes(post.post_id) ? "text-red-500 scale-110" : "text-white scale-100"} 
                       ${liked.includes(post.post_id) && "animate-pulse"}`}>
 
