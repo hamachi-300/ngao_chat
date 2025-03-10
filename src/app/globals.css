@@ -12,11 +12,34 @@
   }
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
+
 @layer utilities {
   .text-glow {
     text-shadow: 0 0 20px rgba(255, 255, 255, 0.3), 0 0 20px rgba(255, 255, 255, 0.3);
   }
 }
+
+/* Add this to your global CSS or in a specific component's style block */
+@layer utilities {
+  .scrollbar-custom::-webkit-scrollbar {
+    width: 7px; /* width of the scrollbar */
+  }
+
+  .scrollbar-custom::-webkit-scrollbar-thumb {
+    background-color: #ffffff88; /* Thumb color */
+    border-radius: 8px;
+  }
+
+  .scrollbar-custom::-webkit-scrollbar-track {
+    background-color: #f1f1f100; /* Track color */
+    border-radius: 10px;
+  }
+}
+
 
 body {
   color: var(--foreground);

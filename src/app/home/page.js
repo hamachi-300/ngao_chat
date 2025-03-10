@@ -184,7 +184,7 @@ const Home = () => {
         <div className='p-6 max-w-4xl mx-auto bg-[#0c163d] w-200 min-h-screen relative pb-24'>
           <ul className='space-y-6'>
             {posts.map((post, id) => (
-              <li key={id} className='  shadow-md'>
+              <li key={id} id={`post-${post.post_id}`} className='shadow-md'>
 
                 <div className='flex flex-col gap-1.5'>
                   <div className='bg-[#9290C3] p-4 shadow-md rounded-md flex flex-col justify-between '>
