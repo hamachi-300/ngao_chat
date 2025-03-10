@@ -127,8 +127,8 @@ export default function YourPost() {
                 ref={dropdownRef}
                 className={`absolute left-1/2 w-100 transform -translate-x-full mt-5 p-2
                     bg-[#9e97ff] bg-opacity-90 border-[#070F2B] border-4 rounded-3xl
-                    text-white transition-all duration-250 ${enable ? "opacity-100" : "opacity-0"
-                    } pointer-events-auto`}
+                    text-white transition-all duration-250 ${enable ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
+                    }`}
             // bg-gradient-to-br from-[#27f4ff] via-[#4f34ff] to-[#9b30ff]
             // style={{ background: 'linear-gradient(to bottom right, rgba(39, 244, 180, 0.7), rgba(79, 52, 180, 0.7), rgba(155, 48, 180, 0.7))' }}
             >

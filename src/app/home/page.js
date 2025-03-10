@@ -6,6 +6,7 @@ import { useEffect, useState } from 'react';
 import PostModal from './modal/PostModal';
 import { AiOutlineHeart } from "react-icons/ai";
 import { FaRegComment } from "react-icons/fa";
+import { CiMenuKebab } from "react-icons/ci";
 
 const Home = () => {
   const [posts, setPosts] = useState([]);
@@ -121,7 +122,7 @@ const Home = () => {
       let arr = prev.filter(p => p !== post.post_id);
       return arr;
     });
-    
+
     try {
       const response = await fetch(`/api/data/posts/${post.post_id}`, {
         method: 'PUT',
@@ -134,7 +135,7 @@ const Home = () => {
       if (!response.ok) {
         throw new Error('Failed to fetch posts');
       }
-      
+
     } catch (error) {
       console.error('Error sync to database:', error);
     }
@@ -158,7 +159,7 @@ const Home = () => {
       if (!response.ok) {
         throw new Error('Failed to fetch posts');
       }
-      
+
     } catch (error) {
       console.error('Error sync to database:', error);
     }
@@ -187,18 +188,26 @@ const Home = () => {
               <li key={id} id={`post-${post.post_id}`} className='shadow-md'>
 
                 <div className='flex flex-col gap-1.5'>
-                  <div className='bg-[#9290C3] p-4 shadow-md rounded-md flex flex-col justify-between '>
-                    <p className='mb-2 font-bold text-white'>{post.post_content}</p>
-                    <p className="ml-1 text-gray-300 font-semibold text-xs">{post.username}</p>
+                  
+                  <div className='bg-[#9290C3] shadow-md rounded-md flex flex-col justify-between '>
+                    <div className='flex justify-between'>
+                      <div className='p-4'>
+                        <p className='mb-2 font-bold text-white'>{post.post_content}</p>
+                        <p className="ml-1 text-gray-300 font-semibold text-xs">{post.username}</p>
+                      </div>
+                      <div className='text-[#e0e0e0] cursor-pointer font-bold mt-2 mr-1 text-[1.25rem]'>
+                        <CiMenuKebab className='hover:scale-110 duration-120 transition-all hover:text-white'/>
+                      </div>
+                    </div>
                   </div>
                   <div className='flex gap-4'>
 
                     <div className='flex gap-1.5'>
                       <button onClick={() => {
-                        
+
                         if (!liked.includes(post.post_id)) {
                           like(post);
-                        } else { 
+                        } else {
                           unlike(post);
                         }
 
