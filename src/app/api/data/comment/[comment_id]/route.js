@@ -35,3 +35,19 @@ export async function PUT(request, { params }) {
     return Response.json({ error: "Failed to connect to database" }, { status: 500 });
   }
 }
+
+export async function DELETE(request, { params }) {
+  try {
+    
+    const db = (await clientPromise).db(process.env.MONGO_DB);
+    const collection = db.collection("posts");
+
+    await collection.deleteOne({ comment_id: parseInt((await params).comment_id) });
+
+    return Response.json({}, { status: 200 });
+
+  } catch (error) {
+    console.error("Database connection error:", error);
+    return Response.json({ error: "Failed to connect to database" }, { status: 500 });
+  }
+}

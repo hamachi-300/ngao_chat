@@ -7,6 +7,9 @@ import PostModal from './modal/PostModal';
 import { AiOutlineHeart } from "react-icons/ai";
 import { FaRegComment } from "react-icons/fa";
 import { CiMenuKebab } from "react-icons/ci";
+import ConfirmDelete from './modal/ConfirmDelete';
+import { FaRegTrashAlt } from "react-icons/fa";
+
 
 const Home = () => {
   const [posts, setPosts] = useState([]);
@@ -15,11 +18,25 @@ const Home = () => {
   const { data: session, status } = useSession();
   const [modal, setModal] = useState(false);
   const [liked, setLiked] = useState([]);
+  const [openDropdown, setOpenDropdown] = useState(null);
+  const [ confirmModal, setConfirmModal ] = useState(null);
   const router = useRouter();
 
   const toggleModal = () => {
     setModal(!modal);
   };
+
+  const toggleDropdown = (postId) => {
+    setOpenDropdown((prev) => (prev === postId ? null : postId));
+  };
+
+  const confirmModalFunc = (post_id) => {
+    setConfirmModal(post_id);
+  }
+
+  const removePostFunc = (post_id) => {
+    setPosts((prev) => prev.filter((post) => post.post_id !== post_id));
+  }
 
   const getPosts = async () => {
     try {
@@ -195,9 +212,25 @@ const Home = () => {
                         <p className='mb-2 font-bold text-white'>{post.post_content}</p>
                         <p className="ml-1 text-gray-300 font-semibold text-xs">{post.username}</p>
                       </div>
-                      <div className='text-[#e0e0e0] cursor-pointer font-bold mt-2 mr-1 text-[1.25rem]'>
-                        <CiMenuKebab className='hover:scale-110 duration-120 transition-all hover:text-white'/>
+                      <div className='text-[#e0e0e0] font-bold mt-2 mr-1 text-[1.25rem]'>
+                        <CiMenuKebab onClick={() => toggleDropdown(post.post_id)} 
+                        className='text-white cursor-pointer hover:text-gray-300 hover:scale-110 transition-all duration-150' 
+                        />
+                        <div className={`absolute text-xs right-8 mt-2 bg-white shadow-md rounded-md z-10 transition-all duration-200 ease-out transform ${openDropdown === post.post_id ? 'opacity-100 scale-100' : 'opacity-0 scale-95 pointer-events-none'}`}>
+                          
+                          
+                          <button 
+                            className='py-1 rounded-md w-full text-left cursor-pointer'
+                          >
+                            <div onClick={() => setConfirmModal(post.post_id)} className=' px-4 py-1 hover:bg-gray-200 flex gap-2 text-red-500 justify-center items-center text-center'>
+                              <FaRegTrashAlt />
+                              Delete
+                            </div>
+                          </button>
+                          
+                        </div>
                       </div>
+                      
                     </div>
                   </div>
                   <div className='flex gap-4'>
@@ -238,6 +271,10 @@ const Home = () => {
         >
           <PostModal modal={modal} toggleModal={toggleModal} user_id={session.user.id} />
         </div>
+
+        {confirmModal !== null && (
+          <ConfirmDelete post_id={confirmModal} setConfirmModal={confirmModalFunc} removePost={removePostFunc} />
+        )} 
       </>
 
     )
