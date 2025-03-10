@@ -137,7 +137,7 @@ export default function YourPost() {
                         >
                             Your Posts
                         </p>
-                        <div className="w-[80%] bg-[#aaf5ff] h-0.5 rounded-full mb-3"></div>
+                        <div className="w-[80%] bg-[#aaf5ff] h-0.5 rounded-full mb-3 shadow-xl"></div>
 
                         <div className="relative flex w-[80%] bg-[#00000038] h-5 mb-1 rounded-full overflow-hidden">
                             <div
