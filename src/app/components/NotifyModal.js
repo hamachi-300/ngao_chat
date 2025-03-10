@@ -47,6 +47,28 @@ export default function NotifyModal({ session }) {
         }
     }
 
+    const clearNotify = async () => {
+        try {
+            // // Clear notify for the user
+            // fetch(`/api/data/reset_notify/${user.user_id}`);
+            // console.log("Clear notify is successful");
+    
+            // // Clear comments for each comment in filteredComments
+            // for (const comment of filteredComments) {
+            //     const clearResponse = await fetch(`/api/data/clear_comment/${comment.comment_id}`);
+            //     if (!clearResponse.ok) {
+            //         throw new Error(`Failed to clear comment with ID ${comment.comment_id}`);
+            //     }
+            // }
+            // console.log("Clear comments complete!");
+    
+            // // Reload the page after clearing notify and comments
+            window.location.reload();
+        } catch (error) {
+            console.log("Error:", error);
+        }
+    };
+
     // fetch users posts comments
     useEffect(()=>{
         const fetch = async () => {
@@ -95,7 +117,7 @@ export default function NotifyModal({ session }) {
                                 ))
                             }
                         </div>
-                        <div className="bg-[#E43F5A] rounded-b-lg p-3 text-xl cursor-pointer">
+                        <div className="bg-[#E43F5A] rounded-b-lg p-3 text-xl cursor-pointer hover:opacity-80" onClick={clearNotify}>
                             clear
                         </div>
                     </div>  
