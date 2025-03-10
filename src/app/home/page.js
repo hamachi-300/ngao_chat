@@ -56,8 +56,6 @@ const Home = () => {
       const commentCounts = await Promise.all(
         postsData.map(async (post) => {
 
-          console.log(post.like);
-
           if (post.like.includes(session.user.id)) {
 
             setLiked((prev) => [...prev, post.post_id]);
@@ -116,6 +114,35 @@ const Home = () => {
     }
   }, [status]);
 
+  async function unlike(post) {
+
+    setLiked((prev) => {
+      
+      console.log(prev);
+      let arr = prev.filter(p => p !== post.post_id);
+      console.log(arr);
+      return arr;
+
+    });
+    
+    try {
+      const response = await fetch(`/api/data/posts/${post.post_id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ action: 'unlike', user_id: session.user.id })
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to fetch posts');
+      }
+      
+    } catch (error) {
+      console.error('Error sync to database:', error);
+    }
+  }
+
   async function handleLike(post) {
 
     setLiked((prev) => [...prev, post.post_id]);
@@ -126,7 +153,7 @@ const Home = () => {
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ user_id: session.user.id })
+        body: JSON.stringify({ action: 'like', user_id: session.user.id })
       });
 
       if (!response.ok) {
@@ -168,7 +195,17 @@ const Home = () => {
                   <div className='flex gap-4'>
 
                     <div className='flex gap-1.5'>
-                      <button onClick={() => handleLike(post)} className={`text-2xl hover:scale-110 ease-out transition-transform duration:150 
+                      <button onClick={() => {
+                        
+                        if (!liked.includes(post.post_id)) {
+                          console.log('like');
+                          handleLike(post);
+                        } else { 
+                          console.log('unlike');
+                          unlike(post);
+                        }
+
+                      }} className={`text-2xl hover:scale-110 ease-out transition-transform duration:150 
                       ${liked.includes(post.post_id) ? "text-red-500 scale-110" : "text-white scale-100"} 
                       ${liked.includes(post.post_id) && "animate-pulse"}`}>
 
