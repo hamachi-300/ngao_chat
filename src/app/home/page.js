@@ -116,13 +116,11 @@ const Home = () => {
 
   async function unlike(post) {
 
-    setLiked((prev) => {
-      
-      console.log(prev);
-      let arr = prev.filter(p => p !== post.post_id);
-      console.log(arr);
-      return arr;
+    post.like = post.like.filter(u => u !== session.user.id);
 
+    setLiked((prev) => {
+      let arr = prev.filter(p => p !== post.post_id);
+      return arr;
     });
     
     try {
@@ -144,6 +142,8 @@ const Home = () => {
   }
 
   async function handleLike(post) {
+
+    post.like.push(session.user.id);
 
     setLiked((prev) => [...prev, post.post_id]);
 
@@ -198,10 +198,8 @@ const Home = () => {
                       <button onClick={() => {
                         
                         if (!liked.includes(post.post_id)) {
-                          console.log('like');
                           handleLike(post);
                         } else { 
-                          console.log('unlike');
                           unlike(post);
                         }
 
