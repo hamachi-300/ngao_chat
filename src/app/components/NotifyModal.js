@@ -1,6 +1,7 @@
 'use client';
 import React, { useEffect, useState } from "react";
-import { IoIosNotifications } from "react-icons/io";
+import { MdNotifications } from "react-icons/md";
+import { MdNotificationsActive } from "react-icons/md";
 
 export default function NotifyModal({ session }) {
     if (!session) return null;
@@ -40,7 +41,6 @@ export default function NotifyModal({ session }) {
             postsData = postsData.filter(post => post.author_id == user_id);
             setPosts(postsData);
 
-            console.log(postsData);
             console.log(`fetch post success!!`)
         } catch (error) {
             console.log("Error:", error);
@@ -58,8 +58,16 @@ export default function NotifyModal({ session }) {
 
     return (
         <>
-            <div className="transition-all duration-250 text-3xl text-white hover:scale-110 hover:text-yellow-300 hover:drop-shadow-lg focus:outline-none cursor-pointer" onClick={() => {toggleModal()}}>
-                <IoIosNotifications />
+            <div 
+                className="transition-all duration-250 text-3xl text-white hover:scale-110 hover:text-yellow-300 hover:drop-shadow-lg focus:outline-none cursor-pointer"
+                onClick={() => toggleModal()}
+            >
+                {/* Notification icon or active state */}
+                {session.user.notify == null ? (
+                    <MdNotifications className="text-3xl" />
+                ) : (
+                    <MdNotificationsActive className="text-3xl text-yellow-500" />
+                )}
             </div>
 
             {modal && (
