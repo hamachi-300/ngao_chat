@@ -22,7 +22,11 @@ export async function PUT(request, { params }) {
 
     await collection.updateOne(
                 { post_id: parseInt((await params).post_id)},
-                { $addToSet: { like: body.user_id }}
+                body.action === 'like' ? 
+                  { $addToSet: { like: body.user_id }} :
+                  body.action === 'unlike' ?
+                    { $pull: { like: body.user_id } } :
+                    {}
             )
 
     return Response.json({}, { status: 200 });

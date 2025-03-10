@@ -17,28 +17,35 @@ export default function Page({ }) {
     const [author, setAuthor] = useState({});
     const [comments, setComments] = useState([]);
     const [commentMessage, setCommentMessage] = useState("");
+    const [liked, setLiked] = useState(false);
     const postId = params.post_id;
 
     const getPost = async () => {
-        try {
-            let response = await fetch(`/api/data/posts/${postId}`);
-            if (!response.ok) {
-                throw new Error("Failed to fetch post");
+
+        if (status === 'authenticated') {
+
+            try {
+                let response = await fetch(`/api/data/posts/${postId}`);
+                if (!response.ok) {
+                    throw new Error("Failed to fetch post");
+                }
+                const postData = await response.json();
+
+                setPost(postData);
+
+                setLiked(postData.like.includes(session.user.id));
+
+                await getAuthor(postData);
+                await getComments();
+            } catch (error) {
+                console.error("Error fetching post:", error);
             }
-            const postData = await response.json();
-
-            setPost(postData);
-
-            await getAuthor(postData);
-            await getComments();
-        } catch (error) {
-            console.error("Error fetching post:", error);
         }
     };
 
     useEffect(() => {
         getPost();
-    }, []);
+    }, [status]);
 
     useEffect(() => {
         getComments();
@@ -140,6 +147,50 @@ export default function Page({ }) {
         }
     };
 
+    async function unlike() {
+
+    setLiked(!liked);
+    
+    try {
+      const response = await fetch(`/api/data/posts/${post.post_id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ action: 'unlike', user_id: session.user.id })
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to fetch posts');
+      }
+      
+    } catch (error) {
+      console.error('Error sync to database:', error);
+    }
+  }
+
+  async function like() {
+
+    setLiked(!liked);
+
+    try {
+      const response = await fetch(`/api/data/posts/${post.post_id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ action: 'like', user_id: session.user.id })
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to fetch posts');
+      }
+      
+    } catch (error) {
+      console.error('Error sync to database:', error);
+    }
+  }
+
 
     useEffect(() => {
         if (!session) {
@@ -167,7 +218,14 @@ export default function Page({ }) {
                     
                     <div className="flex flex-col ml-15 m-4 gap-2">
                         <div className="flex gap-1.5">
-                            <button className="text-white text-2xl"><AiOutlineHeart /></button>
+                            <button onClick={() => {
+                                liked ? unlike() : like()
+                            }} 
+                            className={`text-2xl hover:scale-110 ease-out transition-transform duration:150 
+                            ${liked ? "text-red-500 scale-110" : "text-white scale-100"} 
+                            ${liked && "animate-pulse"}`}>
+                                
+                                <AiOutlineHeart /></button>
                             <p>{post.like.length}</p>
                         </div>
                         <p className="ml-1 text-gray-400 font-semibold text-xs">{author.username}</p>
