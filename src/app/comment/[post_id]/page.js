@@ -19,6 +19,7 @@ export default function Page({ }) {
     const [commentMessage, setCommentMessage] = useState("");
     const [liked, setLiked] = useState(false);
     const [commentLiked, setCommentLiked] = useState([]);
+    const [refresh, setRefresh] = useState(false);
     const postId = params.post_id;
 
     const getPost = async () => {
@@ -46,7 +47,7 @@ export default function Page({ }) {
 
     useEffect(() => {
         getPost();
-    }, [status]);
+    }, [status, refresh]);
 
 
     const getAuthor = async (post) => {
@@ -156,7 +157,7 @@ export default function Page({ }) {
                     throw new Error("Error while posting comment");
                 }
 
-                window.location.reload();
+                setRefresh(!refresh);
                 setCommentMessage("");
                 setLoading(false);
             } catch (error) {
