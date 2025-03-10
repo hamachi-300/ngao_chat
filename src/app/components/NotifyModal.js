@@ -4,19 +4,53 @@ import { IoIosNotifications } from "react-icons/io";
 
 export default function NotifyModal({ session }) {
     if (!session) return null;
-
+    const user_id = session.user.id
     const [modal, setModal] = useState(false);
-    // const [users, setUsers] = useState([]);
-    // const [posts, setPosts] = useState([]);
-    // const [comments, setComments] = useState([]);
+    const [comments, setComments] = useState([]);
+    const [posts, setPosts] = useState([]);
     const toggleModal = () => {
         setModal(!modal);
     }
 
-    // // fetch users posts comments
-    // useEffect(()=>{
-        
-    // }, []);
+    const getComments = async () => {
+        try {
+            const response = await fetch(`/api/data/comments/comments_filter/${user_id}`);
+
+            if (!response.ok){
+                throw new Error(`error while fetch comment of userId: ${user_id}`);
+            }
+
+            let commentsData = await response.json();
+            setComments(commentsData);
+            console.log(`fetch comment of userId: ${user_id} success!!`)
+        } catch (error) {
+            console.log("Error:", error);
+        }
+    }
+
+    const getPost = async () => {
+        try {
+            const response = await fetch(`/api/data/posts`);
+
+            if (!response.ok){
+                throw new Error(`error while fetch post`);
+            }
+
+            let postsData = await response.json();
+            setComments(commentsData);
+            console.log(`fetch post success!!`)
+        } catch (error) {
+            console.log("Error:", error);
+        }
+    }
+
+    // fetch users posts comments
+    useEffect(()=>{
+        const fetch = async () => {
+            await getComments();
+        }
+        fetch()
+    }, []);
 
     return (
         <>
@@ -35,15 +69,19 @@ export default function NotifyModal({ session }) {
                             Notifications
                         </div>
                         <div className="bg-[#535C91] rounded-lg p-5 h-[300px] overflow-y-auto">
-                            <div className="pb-5">
-                                <div className="text-2xl text-left">
-                                    Post Content
-                                </div>
-                                <div className="text-lg text-left m-2">
-                                    Comment
-                                </div>
-                                <div className="h-2 w-20/20 bg-[white] rounded-full"></div>
-                            </div>
+                            {
+                                comments.map((comment, id) => (
+                                    <div className="pb-5" key={id}>
+                                        <div className="text-2xl text-left">
+                                            Post
+                                        </div>
+                                        <div className="text-lg text-left m-2">
+                                            {comment.comment_content}
+                                        </div>
+                                        <div className="h-2 w-20/20 bg-[white] rounded-full"></div>
+                                    </div>
+                                ))
+                            }
                         </div>
                         <div className="bg-[#E43F5A] rounded-b-lg p-3 text-xl cursor-pointer">
                             clear
