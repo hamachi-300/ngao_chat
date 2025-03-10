@@ -3,13 +3,20 @@ import React, { useEffect, useState } from "react";
 import { IoIosNotifications } from "react-icons/io";
 
 export default function NotifyModal({ session }) {
-    const [modal, setModal] = useState(false);
-
     if (!session) return null;
 
+    const [modal, setModal] = useState(false);
+    // const [users, setUsers] = useState([]);
+    // const [posts, setPosts] = useState([]);
+    // const [comments, setComments] = useState([]);
     const toggleModal = () => {
         setModal(!modal);
     }
+
+    // // fetch users posts comments
+    // useEffect(()=>{
+        
+    // }, []);
 
     return (
         <>
