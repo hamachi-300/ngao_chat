@@ -65,7 +65,7 @@ export default function YourPost() {
         }
     }
 
-    
+
 
     useEffect(() => {
         getPosts();
@@ -130,7 +130,7 @@ export default function YourPost() {
                     }`}
             >
                 <div className="flex flex-col justify-center items-center gap-4">
-                    <div className="bg-[#7775ff] rounded-t-3xl flex flex-col justify-center items-center w-full gap-3 p-3">
+                    <div className="bg-[#7775ff] rounded-t-3xl flex flex-col justify-center items-center w-full gap-3 p-3 shadow-md">
                         <p
                             style={{ textShadow: "0px 2px 2px rgba(0,0,0,0.5)" }}
                             className="font-bold text-center"
