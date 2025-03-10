@@ -63,7 +63,7 @@ export default function NotifyModal({ session }) {
             // console.log("Clear comments complete!");
     
             // // Reload the page after clearing notify and comments
-            window.location.reload();
+            toggleModal();
         } catch (error) {
             console.log("Error:", error);
         }
