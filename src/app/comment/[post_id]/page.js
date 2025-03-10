@@ -18,6 +18,7 @@ export default function Page({ }) {
     const [comments, setComments] = useState([]);
     const [commentMessage, setCommentMessage] = useState("");
     const [liked, setLiked] = useState(false);
+    const [commentLiked, setCommentLiked] = useState([]);
     const postId = params.post_id;
 
     const getPost = async () => {
@@ -47,10 +48,6 @@ export default function Page({ }) {
         getPost();
     }, [status]);
 
-    useEffect(() => {
-        getComments();
-    }, [isLoading])
-
 
     const getAuthor = async (post) => {
         try {
@@ -74,10 +71,10 @@ export default function Page({ }) {
             if (!response.ok) {
                 throw new Error("Failed to fetch comments");
             }
-    
+
             let commentsData = await response.json();
             commentsData = commentsData.filter(comment => comment.post_id == postId);
-    
+
             // Extract all unique author IDs from comments
             const authorIds = [...new Set(commentsData.map(comment => comment.author_id))];
 
@@ -89,25 +86,31 @@ export default function Page({ }) {
                 },
                 body: JSON.stringify({ author_ids: authorIds })
             });
-    
+
             if (!authorResponse.ok) {
                 throw new Error("Failed to fetch usernames");
             }
-    
+
             const authorData = await authorResponse.json();
-    
+
             // Create a map of user IDs to usernames
             const userMap = authorData.reduce((map, user) => {
                 map[user.id] = user.username;
                 return map;
             }, {});
-    
+
             // Map the comments with the correct username
-            const commentsWithUsername = commentsData.map(comment => ({
+            const commentsWithUsername = commentsData.map(comment => { 
+                
+                if (comment.like.includes(session.user.id)) {
+                    setCommentLiked((prev) => [...prev, comment.comment_id]);
+                }
+                
+                return ({
                 ...comment,
                 username: userMap[comment.author_id] || `@${comment.author_id}`
-            }));
-    
+            })});
+
             setComments(commentsWithUsername);
         } catch (error) {
             console.error("Error fetching comments:", error);
@@ -126,7 +129,7 @@ export default function Page({ }) {
                 author_id: session.user.id,
                 comment_content: commentMessage
             };
-            try { 
+            try {
                 const response = await fetch(url, {
                     method: "POST",
                     headers: {
@@ -149,47 +152,102 @@ export default function Page({ }) {
 
     async function unlike() {
 
-    setLiked(!liked);
-    
-    try {
-      const response = await fetch(`/api/data/posts/${post.post_id}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ action: 'unlike', user_id: session.user.id })
-      });
+        post.like = post.like.filter(u => u !== session.user.id);
 
-      if (!response.ok) {
-        throw new Error('Failed to fetch posts');
-      }
-      
-    } catch (error) {
-      console.error('Error sync to database:', error);
+        setLiked(!liked);
+
+        try {
+            const response = await fetch(`/api/data/posts/${post.post_id}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ action: 'unlike', user_id: session.user.id })
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to fetch posts');
+            }
+
+        } catch (error) {
+            console.error('Error sync to database:', error);
+        }
     }
-  }
 
-  async function like() {
+    async function like() {
 
-    setLiked(!liked);
+        post.like.push(session.user.id);
 
-    try {
-      const response = await fetch(`/api/data/posts/${post.post_id}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ action: 'like', user_id: session.user.id })
-      });
+        setLiked(!liked);
 
-      if (!response.ok) {
-        throw new Error('Failed to fetch posts');
-      }
-      
-    } catch (error) {
-      console.error('Error sync to database:', error);
+        try {
+            const response = await fetch(`/api/data/posts/${post.post_id}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ action: 'like', user_id: session.user.id })
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to fetch posts');
+            }
+
+        } catch (error) {
+            console.error('Error sync to database:', error);
+        }
     }
-  }
+
+    async function unlikeComment(comment) {
+
+        comment.like = comment.like.filter(u => u !== session.user.id);
+
+        setCommentLiked((prev) => {
+            let arr = prev.filter(p => p !== comment.comment_id);
+            return arr;
+        });
+
+        try {
+            const response = await fetch(`/api/data/comments/${comment.comment_id}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ action: 'unlike', user_id: session.user.id })
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to fetch posts');
+            }
+
+        } catch (error) {
+            console.error('Error sync to database:', error);
+        }
+    }
+
+    async function likeComment(comment) {
+
+        comment.like.push(session.user.id);
+
+        setCommentLiked((prev) => [...prev, comment.comment_id]);
+
+        try {
+            const response = await fetch(`/api/data/comments/${comment.comment_id}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ action: 'like', user_id: session.user.id })
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to fetch posts');
+            }
+
+        } catch (error) {
+            console.error('Error sync to database:', error);
+        }
+    }
 
 
     useEffect(() => {
@@ -209,22 +267,22 @@ export default function Page({ }) {
                     <div className='flex flex-col ml-15 m-4 mt-7 gap-1.5 text-blue-300 hover:text-blue-200 transition-all duration-250 text-sm'>
                         <button onClick={() => router.push("/home")}>
                             <div className='flex items-center'>
-                                <IoCaretBackOutline /> 
+                                <IoCaretBackOutline />
                                 Back
                             </div>
                         </button>
                         <p className=" text-white font-semibold text-3xl">{post.post_content}</p>
                     </div>
-                    
+
                     <div className="flex flex-col ml-15 m-4 gap-2">
                         <div className="flex gap-1.5">
                             <button onClick={() => {
                                 liked ? unlike() : like()
-                            }} 
-                            className={`text-2xl hover:scale-110 ease-out transition-transform duration:150 
+                            }}
+                                className={`text-2xl hover:scale-110 ease-out transition-transform duration:150 
                             ${liked ? "text-red-500 scale-110" : "text-white scale-100"} 
                             ${liked && "animate-pulse"}`}>
-                                
+
                                 <AiOutlineHeart /></button>
                             <p>{post.like.length}</p>
                         </div>
@@ -246,7 +304,15 @@ export default function Page({ }) {
                                     </div>
                                     <div className="flex gap-4">
                                         <div className="flex gap-1.5">
-                                            <button className="text-2xl"><AiOutlineHeart /></button>
+                                            <button onClick={() => {
+                                                commentLiked.includes(comment.comment_id) ? unlikeComment(comment) : likeComment(comment)
+                                            }} className={`text-2xl hover:scale-110 ease-out transition-transform duration:150 
+                                            ${commentLiked.includes(comment.comment_id) ? "text-red-500 scale-110" : "text-white scale-100"} 
+                                            ${commentLiked.includes(comment.comment_id) && "animate-pulse"}`}>
+
+                                                <AiOutlineHeart />
+
+                                            </button>
                                             <p>{comment.like.length}</p>
                                         </div>
                                     </div>
@@ -257,18 +323,18 @@ export default function Page({ }) {
                 </div>
 
                 {/* Fixed Reply Button */}
-                <div 
+                <div
                     className="fixed bottom-5 left-1/2 transform -translate-x-1/2 flex bg-[#E5E7EB] w-11/12 max-w-[600px] rounded-2xl shadow-md"
                     style={{ zIndex: 10 }}
                 >
-                    <input 
-                        type="text" 
-                        placeholder="Write a reply..." 
+                    <input
+                        type="text"
+                        placeholder="Write a reply..."
                         className="flex-1 p-3 bg-transparent text-[#070F2B] outline-none rounded-l-2xl"
                         value={commentMessage || ""}
                         onChange={(e) => setCommentMessage(e.target.value)}
                     />
-                    <button 
+                    <button
                         className="p-3 bg-[#615FFF] text-2xl hover:bg-[#8d8bff] transition-all duration-250 text-white font-semibold rounded-r-2xl"
                         onClick={submitComment}
                     >

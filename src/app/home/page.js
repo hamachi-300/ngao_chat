@@ -57,7 +57,6 @@ const Home = () => {
         postsData.map(async (post) => {
 
           if (post.like.includes(session.user.id)) {
-
             setLiked((prev) => [...prev, post.post_id]);
           }
 
