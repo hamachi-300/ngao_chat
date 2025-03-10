@@ -34,9 +34,21 @@ const Home = () => {
     setConfirmModal(post_id);
   }
 
-  const removePostFunc = (post_id) => {
-    setPosts((prev) => prev.filter((post) => post.post_id !== post_id));
-  }
+  const deletePost = async (post_id) => {
+      try {
+          const response = await fetch(`/api/data/posts/${post_id}`, {
+          method: 'DELETE',
+          });
+
+          if (!response.ok) {
+              throw new Error('Failed to delete post');
+          }
+
+          setPosts((prev) => prev.filter((post) => post.post_id !== post_id));
+      } catch (error) {
+          console.error('Error deleting post:', error);
+      }
+  };
 
   const getPosts = async () => {
     try {
@@ -218,17 +230,18 @@ const Home = () => {
                         />
                         <div className={`absolute text-xs right-8 mt-2 bg-white shadow-md rounded-md z-10 transition-all duration-200 ease-out transform ${openDropdown === post.post_id ? 'opacity-100 scale-100' : 'opacity-0 scale-95 pointer-events-none'}`}>
                           
-                          
-                          <button 
-                            className='py-1 rounded-md w-full text-left cursor-pointer'
-                          >
-                            {
-                              <div onClick={() => setConfirmModal(post.post_id)} className=' px-4 py-1 hover:bg-gray-200 flex gap-2 text-red-500 justify-center items-center text-center'>
-                                <FaRegTrashAlt />
-                                Delete
-                              </div>
-                            }
-                          </button>
+                          { post.author_id === session.user.id &&
+                            <button 
+                              className='py-1 rounded-md w-full text-left cursor-pointer'
+                            >
+                              {
+                                <div onClick={() => setConfirmModal(post.post_id)} className=' px-4 py-1 hover:bg-gray-200 flex gap-2 text-red-500 justify-center items-center text-center'>
+                                  <FaRegTrashAlt />
+                                  Delete
+                                </div>
+                              }
+                            </button>
+                          } 
                           
                         </div>
                       </div>
@@ -275,7 +288,7 @@ const Home = () => {
         </div>
 
         {confirmModal !== null && (
-          <ConfirmDelete post_id={confirmModal} setConfirmModal={confirmModalFunc} removePost={removePostFunc} />
+          <ConfirmDelete post_id={confirmModal} setConfirmModal={confirmModalFunc} deletePost={deletePost} />
         )} 
       </>
 

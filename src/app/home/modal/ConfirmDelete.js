@@ -2,25 +2,8 @@
 
 import React, { useState } from "react";
 import { motion } from "framer-motion";
-import { AiFillEdit } from "react-icons/ai";
 
-export default function ConfirmDelete({ post_id, setConfirmModal, removePost }) {
-
-    const deletePost = async () => {
-        try {
-            const response = await fetch(`/api/data/posts/${post_id}`, {
-            method: 'DELETE',
-            });
-
-            if (!response.ok) {
-                throw new Error('Failed to delete post');
-            }
-
-            removePost(post_id);
-        } catch (error) {
-            console.error('Error deleting post:', error);
-        }
-    };
+export default function ConfirmDelete({ post_id, setConfirmModal, deletePost }) {
 
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-gray-800/70 z-50">
@@ -48,7 +31,7 @@ export default function ConfirmDelete({ post_id, setConfirmModal, removePost }) 
           <hr className="" />
         </div>
         <div className="text-sm flex flex-row-reverse gap-3 mt-7">
-          <button onClick={() => {deletePost(); setConfirmModal(null)}} className="text-white transition-all duration-150 hover:bg-red-600 bg-red-500 p-1 px-3 rounded-md">
+          <button onClick={() => {deletePost(post_id); setConfirmModal(null)}} className="text-white transition-all duration-150 hover:bg-red-600 bg-red-500 p-1 px-3 rounded-md">
             Delete
           </button>
           <button onClick={() => setConfirmModal(null)} className="bg-white transition-all duration-150 hover:bg-gray-200 p-1 px-3 rounded-md">
