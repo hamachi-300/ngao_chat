@@ -67,7 +67,7 @@ export default function Page({ }) {
 
     const getComments = async () => {
         try {
-            const response = await fetch(`/api/data/comments`);
+            const response = await fetch(`/api/data/comment`);
             if (!response.ok) {
                 throw new Error("Failed to fetch comments");
             }
@@ -123,12 +123,13 @@ export default function Page({ }) {
 
             setLoading(true);
 
-            const url = "/api/data/comments";
+            const url = "/api/data/comment";
             const data = {
                 post_id: parseInt(postId),
                 author_id: session.user.id,
                 comment_content: commentMessage
             };
+
             try {
                 const response = await fetch(url, {
                     method: "POST",
@@ -142,6 +143,7 @@ export default function Page({ }) {
                     throw new Error("Error while posting comment");
                 }
 
+                window.location.reload();
                 setCommentMessage("");
                 setLoading(false);
             } catch (error) {
@@ -251,10 +253,10 @@ export default function Page({ }) {
 
 
     useEffect(() => {
-        if (!session) {
+        if (status === "unauthenticated") {
             router.push('/login');
         }
-    }, [status, router]);
+    }, [status]);
 
     if (status === 'loading' || isLoading) {
         return <p className="text-center mt-10 text-lg text-gray-500">Loading...</p>;
