@@ -6,6 +6,9 @@ import { useParams, useRouter } from "next/navigation";
 import { IoCaretBackOutline } from "react-icons/io5";
 import { AiOutlineHeart } from "react-icons/ai";
 import { FiSend } from "react-icons/fi";
+import { FaComment } from "react-icons/fa";
+import { FaHeart } from "react-icons/fa";
+import { FaGamepad } from "react-icons/fa";
 
 export default function Page({ }) {
 
@@ -279,6 +282,7 @@ export default function Page({ }) {
     }
 
     return (
+        
         <div className="flex justify-center items-center min-h-screen">
             <div className="bg-[#0c163d] w-200 min-h-screen relative pb-24">
                 <div className="w-full h-50 flex flex-col justify-between">
@@ -291,7 +295,6 @@ export default function Page({ }) {
                         </button>
                         <p className=" text-white font-semibold text-3xl">{post.post_content}</p>
                     </div>
-
                     <div className="flex flex-col ml-15 m-4 gap-2">
                         <div className="flex gap-1.5">
                             <button onClick={() => {
@@ -302,9 +305,17 @@ export default function Page({ }) {
                             ${liked && "animate-pulse"}`}>
 
                                 <AiOutlineHeart /></button>
-                            <p>{post.like.length}</p>
+                            <p className='flex items-center justify-cente'>{post.like.length}</p>
+                            <span
+                              className={`pl-2 pr-2 p-1 m-1 text-sm rounded-full text-gray-300 bg-[#535C91] `}
+                            >
+                              {post.category == "general" && (<FaComment className="inline mr-1"/>)}
+                              {post.category == "love" && (<FaHeart className="inline mr-1" />)}
+                              {post.category == "game" && (<FaGamepad className="inline mr-1" />)}
+                              {post.category}
+                            </span>
                         </div>
-                        <p className="ml-1 text-gray-400 font-semibold text-xs">{author.username}</p>
+                        <p className="ml-1 text-gray-400 font-semibold text-xs w-fit inline">{author.username}</p>
                     </div>
                     <div className="flex justify-center">
                         <div className="h-1 w-11/12 bg-[#9290C3] rounded-full"></div>

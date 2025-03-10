@@ -2,16 +2,21 @@
 
 import React, { useState } from "react";
 import { AiFillEdit } from "react-icons/ai";
+import { FaComment } from "react-icons/fa";
+import { FaHeart } from "react-icons/fa";
+import { FaGamepad } from "react-icons/fa";
 
 export default function PostModal({ user_id, modal, toggleModal , setRefresh, refresh}) {
   const [content, setContent] = useState("");
   const [postError, setPostError] = useState("");
+  const [categories, setCategories] = useState("general");
 
   const submitPost = async () => {
     const url = "/api/data/posts";
     const data = {
       post_content: content,
       author_id: user_id,
+      category: categories,
     };
 
     try {
@@ -51,6 +56,11 @@ export default function PostModal({ user_id, modal, toggleModal , setRefresh, re
     setContent(value);
   };
 
+  const changeCatagory = (event) => {
+    const { value } = event.target;
+    setCategories(value);
+  }
+
   return (
     <>
       <button
@@ -70,8 +80,23 @@ export default function PostModal({ user_id, modal, toggleModal , setRefresh, re
 
           <div className="relative bg-indigo-500 p-6 rounded-2xl shadow-lg z-60 max-w-lg w-full text-white">
             <h2 className="text-2xl mb-4 font-bold">Post</h2>
+            <button onClick={(e) => changeCatagory(e)} value="general" 
+              className={`pl-2 pr-2 p-1 m-1 ml-0 text-sm rounded-full transition-all duration-250 hover:opacity-80 ${categories == "general" ? "bg-[#535C91]" : "bg-[#9290C3] cursor-pointer"}`}
+            >
+              <FaComment className="inline"/> general
+            </button>
+            <button onClick={(e) => changeCatagory(e)} value="love" 
+              className={`pl-2 pr-2 p-1 m-1 ml-0 text-sm rounded-full transition-all duration-250 hover:opacity-80 ${categories == "love" ? "bg-[#535C91]" : "bg-[#9290C3] cursor-pointer"}`}
+            >
+              <FaHeart className="inline"/> love
+            </button>
+            <button onClick={(e) => changeCatagory(e)} value="game" 
+              className={`pl-2 pr-2 p-1 m-1 ml-0 text-sm rounded-full transition-all duration-250 hover:opacity-80 ${categories == "game" ? "bg-[#535C91]" : "bg-[#9290C3] cursor-pointer"}`}
+            >
+              <FaGamepad className="inline"/> game
+            </button>
             <textarea
-              className="w-full h-32 p-2 mb-4 rounded-md bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full h-32 p-2 mb-4 mt-1 rounded-md bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
               placeholder="Type here..."
               value={content}
               onChange={handlePost}

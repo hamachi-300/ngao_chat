@@ -1,4 +1,5 @@
 import clientPromise from "@/database/mongodb";
+import { FaComment } from "react-icons/fa";
 
 export async function GET() {
     try {
@@ -36,6 +37,7 @@ export async function POST(request) {
             post_id: post_id,
             post_content: body.post_content,
             author_id: body.author_id,
+            category: body.category,
             like: []
         });
         return Response.json({ message: "insert successed", content: body }, { status: 200 });

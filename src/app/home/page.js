@@ -6,6 +6,9 @@ import { useEffect, useState } from 'react';
 import PostModal from './modal/PostModal';
 import { AiOutlineHeart } from "react-icons/ai";
 import { FaRegComment } from "react-icons/fa";
+import { FaComment } from "react-icons/fa";
+import { FaHeart } from "react-icons/fa";
+import { FaGamepad } from "react-icons/fa";
 
 const Home = () => {
   const [posts, setPosts] = useState([]);
@@ -16,6 +19,7 @@ const Home = () => {
   const [liked, setLiked] = useState([]);
   const router = useRouter();
   const [refresh, setRefresh] = useState("");
+  const [categories, setCategories] = useState("general");
 
   const toggleModal = () => {
     setModal(!modal);
@@ -29,6 +33,7 @@ const Home = () => {
       }
 
       let postsData = await response.json();
+      postsData = postsData.filter(post => post.category == categories)
 
       // Extract all unique author IDs from posts
       const authorIds = [...new Set(postsData.map(post => post.author_id))];
@@ -93,6 +98,11 @@ const Home = () => {
     }
   };
 
+  const changeCatagory = (event) => {
+    const { value } = event.target;
+    setCategories(value);
+  }
+
   useEffect(() => {
     if (!session) {
       router.push('/login');
@@ -112,7 +122,7 @@ const Home = () => {
       };
       fetchPosts();
     }
-  }, [status, refresh]);
+  }, [status, refresh, categories]);
 
   async function unlike(post) {
 
@@ -184,13 +194,38 @@ const Home = () => {
       <>
         <div className='p-6 max-w-4xl mx-auto bg-[#0c163d] w-200 min-h-screen relative pb-24'>
           <ul className='space-y-6'>
+            <div className='mb-2'>
+              <button onClick={(e) => changeCatagory(e)} value="general"
+                className={`pl-2 pr-2 p-1 m-1 ml-0 text-sm rounded-full transition-all duration-250 hover:opacity-80 ${categories == "general" ? "bg-[#535C91]" : "bg-[#9290C3] cursor-pointer"}`}
+              >
+                <FaComment className="inline"/> general
+              </button>
+              <button onClick={(e) => changeCatagory(e)} value="love" 
+                className={`pl-2 pr-2 p-1 m-1 ml-0 text-sm rounded-full transition-all duration-250 hover:opacity-80 ${categories == "love" ? "bg-[#535C91]" : "bg-[#9290C3] cursor-pointer"}`}
+              >
+                <FaHeart className="inline"/> love
+              </button>
+              <button onClick={(e) => changeCatagory(e)} value="game" 
+                className={`pl-2 pr-2 p-1 m-1 ml-0 text-sm rounded-full transition-all duration-250 hover:opacity-80 ${categories == "game" ? "bg-[#535C91]" : "bg-[#9290C3] cursor-pointer"}`}
+              >
+                <FaGamepad className="inline"/> game
+              </button>
+            </div>
             {posts.map((post, id) => (
-              <li key={id} className='  shadow-md'>
-
+              <li key={id} className='shadow-md'>
                 <div className='flex flex-col gap-1.5'>
-                  <div className='bg-[#9290C3] p-4 shadow-md rounded-md flex flex-col justify-between '>
-                    <p className='mb-2 font-bold text-white'>{post.post_content}</p>
-                    <p className="ml-1 text-gray-300 font-semibold text-xs">{post.username}</p>
+                  <div className='bg-[#9290C3] p-4 shadow-md rounded-md justify-between'>
+                    
+                    <span
+                      className={`pl-2 pr-2 p-1 m-1 ml-0 text-sm rounded-full text-gray-300 bg-[#8381AF]`}
+                    >
+                      {post.category == "general" && (<FaComment className="inline mr-1"/>)}
+                      {post.category == "love" && (<FaHeart className="inline mr-1" />)}
+                      {post.category == "game" && (<FaGamepad className="inline mr-1" />)}
+                      {post.category}
+                    </span>
+                    <p className='mb-2 font-bold text-white mt-2'>{post.post_content}</p>
+                    <p className="ml-1 text-gray-300 font-semibold text-xs">@{post.username}</p>
                   </div>
                   <div className='flex gap-4'>
 
