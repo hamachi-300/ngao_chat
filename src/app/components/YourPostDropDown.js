@@ -4,12 +4,13 @@ import { IoEarthSharp } from "react-icons/io5";
 import { useState, useEffect, useRef } from "react";
 import { useSession } from "next-auth/react";
 import { AiOutlineHeart } from "react-icons/ai";
-import { FaRegComment } from "react-icons/fa";
+import { FaRegComment, FaRegCommentDots } from "react-icons/fa";
 
 export default function YourPost() {
     const { data: session, status } = useSession();
     const [enable, setEnable] = useState(false);
     const [posts, setPosts] = useState([]);
+    const [comments, setComments] = useState([]);
     const dropdownRef = useRef(null);
     const buttonRef = useRef(null);
     const [active, setActive] = useState("Posts");
@@ -65,10 +66,58 @@ export default function YourPost() {
         }
     }
 
+    const getComments = async () => {
+        if (status === 'authenticated') {
+            try {
 
+                const response = await fetch(`/api/data/profile/comments/${session.user.id}`);
+
+                if (!response.ok) {
+                    throw new Error('Failed to fetch posts');
+                }
+
+                let commentsData = await response.json();
+
+                const postContentMap = await Promise.all(
+                    commentsData.map(async (comment) => {
+                        const postRes = await fetch(`/api/data/posts/${comment.post_id}`);
+
+                        if (!postRes.ok) {
+                            throw new Error('Failed to fetch posts');
+                        }
+
+                        let postData = await postRes.json();
+
+                        return {
+                            comment_id: comment.comment_id,
+                            post_content: postData.post_content
+                        }
+
+                    })
+                );
+
+                const postsContent = postContentMap.reduce((map, { comment_id, post_content }) => {
+                    map[comment_id] = post_content;
+                    return map;
+                }, {});
+
+                const p = commentsData.map(comment => ({
+                    ...comment,
+                    post_content: postsContent[comment.comment_id] || ""
+                }));
+
+                setComments(p);
+                
+
+            } catch (error) {
+                throw new Error(error);
+            }
+        }
+    }
 
     useEffect(() => {
         getPosts();
+        getComments();
     }, [status]);
 
     // Toggle dropdown visibility on click
@@ -137,7 +186,7 @@ export default function YourPost() {
                         >
                             Your Posts
                         </p>
-                        <div className="w-[80%] bg-[#aaf5ff] h-0.5 rounded-full mb-3 shadow-xl"></div>
+                        <div className="w-[80%] bg-[#aaf5ff] h-0.5 rounded-full mb-1 shadow-xl"></div>
 
                         <div className="relative flex w-[80%] bg-[#00000038] h-5 mb-1 rounded-full overflow-hidden">
                             <div
@@ -161,14 +210,16 @@ export default function YourPost() {
                             </button>
                         </div>
                     </div>
+                    
                     <div className="flex flex-col w-full">
-                        <ul className="m-2 pr-1.5 space-y-2.5 overflow-auto max-h-[400px] scrollbar-custom">
+                        {active === "Posts" ? (
+                            <ul className="m-2 pr-1.5 space-y-2.5 overflow-auto max-h-[400px] scrollbar-custom">
                             {posts.map((posts, id) => (
                                 <li key={id} onClick={() => scrollToPost(posts.post_id)} className="cursor-pointer">
                                     <div className="flex gap-1 bg-[#00000058] hover:bg-[#0000008b] transition-color duration-150 rounded shadow-md">
                                         <div className="rounded-l bg-gray-200 min-w-1 w-1"></div>
-                                        <div className="flex flex-col">
-                                            <p className="pl-3 pt-2 pb-1">{posts.post_content}</p>
+                                        <div className="flex flex-col overflow-x-hidden">
+                                            <p className="pl-3 pt-2 pb-1 max-w-full">{posts.post_content}</p>
                                             <div className="flex gap-0.5">
                                                 <div className="pl-3 pb-2 pt-1 flex gap-1.5 items-center text-sm text-center">
                                                     <AiOutlineHeart />
@@ -182,8 +233,32 @@ export default function YourPost() {
                                         </div>
                                     </div>
                                 </li>
-                            ))}
-                        </ul>
+                                ))}
+                            </ul>
+                        ) : (
+                            <ul className="m-2 pr-1.5 space-y-2.5 overflow-auto max-h-[400px] scrollbar-custom">
+                            {comments.map((comment, id) => (
+                                <li key={id} onClick={() => scrollToPost(comment.comment_id)} className="cursor-pointer">
+                                    <div className="flex gap-1 bg-[#00000058] hover:bg-[#0000008b] transition-color duration-150 rounded shadow-md">
+                                        <div className="rounded-l bg-gray-200 min-w-1 w-1"></div>
+                                        <div className="flex flex-col overflow-x-hidden">
+                                            <p className="pl-3 pt-2 pb-1">{comment.comment_content}</p>
+                                            <div className="flex min-w-90 justify-between">
+                                                <div className="pl-3 pb-2 pt-1 flex gap-1.5 items-center text-sm text-center">
+                                                    <FaRegCommentDots />
+                                                    <p>{comment.post_content}</p>
+                                                </div>
+                                                <div className="pr-3 pb-2 pt-1 flex gap-1.5 items-center text-sm text-gray-300 text-center">
+                                                    <AiOutlineHeart />
+                                                    <p>{comment.like.length}</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+                                ))}
+                            </ul>
+                        )}
                     </div>
                 </div>
             </div>

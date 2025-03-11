@@ -40,9 +40,9 @@ export async function DELETE(request, { params }) {
   try {
     
     const db = (await clientPromise).db(process.env.MONGO_DB);
-    const collection = db.collection("posts");
 
-    await collection.deleteOne({ post_id: parseInt((await params).post_id) });
+    await db.collection("posts").deleteOne({ post_id: parseInt((await params).post_id) });
+    await db.collection("comments").deleteMany({ post_id: parseInt((await params).post_id) });
 
     return Response.json({}, { status: 200 });
 

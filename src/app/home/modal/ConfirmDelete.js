@@ -26,9 +26,9 @@ export default function ConfirmDelete({ post_id, setConfirmModal, deletePost }) 
         transition={{ duration: 0.3 }}         // Transition timing
       >
         <div>
-          <p className="mb-2 text-[1.5rem]">Confirm Delete</p>
-          <p className="text-gray-500 text-sm">Are you sure you want to delete this post?</p>
-          <hr className="" />
+          <p className="mb-3 text-[1.5rem]">Confirm Delete</p>
+          <hr className="text-gray-300" />
+          <p className="text-gray-500 mt-2 mb-5 text-sm">Are you sure you want to delete this post?</p>
         </div>
         <div className="text-sm flex flex-row-reverse gap-3 mt-7">
           <button onClick={() => {deletePost(post_id); setConfirmModal(null)}} className="text-white transition-all duration-150 hover:bg-red-600 bg-red-500 p-1 px-3 rounded-md">
