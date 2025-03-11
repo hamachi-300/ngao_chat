@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@auth/mongodb-adapter": "^3.8.0",
+    "framer-motion": "^12.4.11",
     "mongodb": "^6.14.2",
     "next": "^15.2.1",
     "next-auth": "^4.24.11",
