@@ -33,7 +33,9 @@ const Home = () => {
       }
 
       let postsData = await response.json();
-      postsData = postsData.filter(post => post.category == categories)
+      if (categories != "general") {
+        postsData = postsData.filter(post => post.category == categories)
+      }
 
       // Extract all unique author IDs from posts
       const authorIds = [...new Set(postsData.map(post => post.author_id))];
