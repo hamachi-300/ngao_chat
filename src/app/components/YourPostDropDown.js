@@ -5,6 +5,7 @@ import { useState, useEffect, useRef } from "react";
 import { useSession } from "next-auth/react";
 import { AiOutlineHeart } from "react-icons/ai";
 import { FaRegComment, FaRegCommentDots } from "react-icons/fa";
+import { useRouter } from "next/navigation";
 
 export default function YourPost() {
     const { data: session, status } = useSession();
@@ -14,6 +15,7 @@ export default function YourPost() {
     const dropdownRef = useRef(null);
     const buttonRef = useRef(null);
     const [active, setActive] = useState("Posts");
+    const router = useRouter();
 
     const getPosts = async () => {
 
@@ -145,9 +147,27 @@ export default function YourPost() {
 
     const scrollToPost = (post_id) => {
         const postElement = document.getElementById(`post-${post_id}`);
+    
         if (postElement) {
-            postElement.scrollIntoView({ behavior: "smooth", block: "start" });
-            setEnable(false); // Close the dropdown after selection
+            // If the post exists on the page, scroll to it smoothly
+            postElement.scrollIntoView({ behavior: "smooth", block: "center" });
+            setEnable(false); // Close dropdown
+        } else {
+            // If not on the posts page, navigate there and then scroll
+            router.push(`/home#post-${post_id}`);
+            setEnable(false);
+        }
+    }
+
+    const scrollToComment = (post_id, comment_id) => {
+        const commentElement = document.getElementById(`comment-${comment_id}`);
+
+        if (commentElement) {
+            commentElement.scrollIntoView({ behavior: "smooth", block: "center" });
+            setEnable(false);
+        } else {
+            router.push(`/comment/${post_id}#comment-${comment_id}`);
+            setEnable(false);
         }
     };
 
@@ -238,7 +258,7 @@ export default function YourPost() {
                         ) : (
                             <ul className="m-2 pr-1.5 space-y-2.5 overflow-auto max-h-[400px] scrollbar-custom">
                             {comments.map((comment, id) => (
-                                <li key={id} onClick={() => scrollToPost(comment.comment_id)} className="cursor-pointer">
+                                <li key={id} onClick={() => scrollToComment(comment.post_id, comment.comment_id)} className="cursor-pointer">
                                     <div className="flex gap-1 bg-[#00000058] hover:bg-[#0000008b] transition-color duration-150 rounded shadow-md">
                                         <div className="rounded-l bg-gray-200 min-w-1 w-1"></div>
                                         <div className="flex flex-col overflow-x-hidden">

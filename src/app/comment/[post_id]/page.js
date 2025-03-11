@@ -26,6 +26,8 @@ export default function Page({ }) {
     const [confirmModal, setConfirmModal] = useState(null);
     const postId = params.post_id;
 
+    
+
     const toggleDropdown = (postId) => {
         setOpenDropdown((prev) => (prev === postId ? null : postId));
     };
@@ -328,7 +330,7 @@ export default function Page({ }) {
                     <div className="flex justify-center mt-10">
                         <ul className="space-y-6 flex flex-col items-center w-full">
                             {comments.map((comment, id) => (
-                                <li key={id} className="shadow-md flex justify-center w-full">
+                                <li key={id} id={`comment-${comment.comment_id}`} className="shadow-md flex justify-center w-full">
                                     <div className="w-11/12 max-w-[600px] flex flex-col justify-center gap-1.5">
                                         
                                         <div className='bg-[#9290C3] shadow-md rounded-md flex flex-col justify-between w-full'>

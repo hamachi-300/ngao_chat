@@ -1,7 +1,7 @@
 'use client';
 
 import { useSession } from 'next-auth/react';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import PostModal from './modal/PostModal';
 import { AiOutlineHeart } from "react-icons/ai";
@@ -19,8 +19,19 @@ const Home = () => {
   const [modal, setModal] = useState(false);
   const [liked, setLiked] = useState([]);
   const [openDropdown, setOpenDropdown] = useState(null);
-  const [ confirmModal, setConfirmModal ] = useState(null);
+  const [confirmModal, setConfirmModal] = useState(null);
   const router = useRouter();
+  const pathname = usePathname();
+
+  useEffect(() => {
+      if (pathname.includes("#post-")) {
+        const postId = pathname.split("#post-")[1];
+        const postElement = document.getElementById(`post-${postId}`);
+        if (postElement) {
+            postElement.scrollIntoView({ behavior: "smooth", block: "center" });
+        }
+      }
+  }, [pathname, isLoading]);
 
   const toggleModal = () => {
     setModal(!modal);
@@ -35,19 +46,19 @@ const Home = () => {
   }
 
   const deletePost = async (post_id) => {
-      try {
-          const response = await fetch(`/api/data/posts/${post_id}`, {
-          method: 'DELETE',
-          });
+    try {
+      const response = await fetch(`/api/data/posts/${post_id}`, {
+        method: 'DELETE',
+      });
 
-          if (!response.ok) {
-              throw new Error('Failed to delete post');
-          }
-
-          setPosts((prev) => prev.filter((post) => post.post_id !== post_id));
-      } catch (error) {
-          console.error('Error deleting post:', error);
+      if (!response.ok) {
+        throw new Error('Failed to delete post');
       }
+
+      setPosts((prev) => prev.filter((post) => post.post_id !== post_id));
+    } catch (error) {
+      console.error('Error deleting post:', error);
+    }
   };
 
   const getPosts = async () => {
@@ -217,7 +228,7 @@ const Home = () => {
               <li key={id} id={`post-${post.post_id}`} className='shadow-md'>
 
                 <div className='flex flex-col gap-1.5'>
-                  
+
                   <div className='bg-[#9290C3] shadow-md rounded-md flex flex-col justify-between '>
                     <div className='flex justify-between'>
                       <div className='p-4'>
@@ -225,13 +236,13 @@ const Home = () => {
                         <p className="ml-1 text-gray-300 font-semibold text-xs">{post.username}</p>
                       </div>
                       <div className='text-[#e0e0e0] font-bold mt-2 mr-1 text-[1.25rem]'>
-                        <CiMenuKebab onClick={() => toggleDropdown(post.post_id)} 
-                        className='text-white cursor-pointer hover:text-gray-300 hover:scale-110 transition-all duration-150' 
+                        <CiMenuKebab onClick={() => toggleDropdown(post.post_id)}
+                          className='text-white cursor-pointer hover:text-gray-300 hover:scale-110 transition-all duration-150'
                         />
                         <div className={`absolute text-xs right-8 mt-2 bg-white shadow-md rounded-md z-10 transition-all duration-200 ease-out transform ${openDropdown === post.post_id ? 'opacity-100 scale-100' : 'opacity-0 scale-95 pointer-events-none'}`}>
-                          
-                          { post.author_id === session.user.id &&
-                            <button 
+
+                          {post.author_id === session.user.id &&
+                            <button
                               className='py-1 rounded-md w-full text-left cursor-pointer'
                             >
                               {
@@ -241,11 +252,11 @@ const Home = () => {
                                 </div>
                               }
                             </button>
-                          } 
-                          
+                          }
+
                         </div>
                       </div>
-                      
+
                     </div>
                   </div>
                   <div className='flex gap-4'>
@@ -289,7 +300,7 @@ const Home = () => {
 
         {confirmModal !== null && (
           <ConfirmDelete post_id={confirmModal} setConfirmModal={confirmModalFunc} deletePost={deletePost} />
-        )} 
+        )}
       </>
 
     )
