@@ -1,7 +1,7 @@
 'use client';
 
 import { useSession } from 'next-auth/react';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import PostModal from './modal/PostModal';
 import { AiOutlineHeart } from "react-icons/ai";
@@ -9,6 +9,10 @@ import { FaRegComment } from "react-icons/fa";
 import { FaComment } from "react-icons/fa";
 import { FaHeart } from "react-icons/fa";
 import { FaGamepad } from "react-icons/fa";
+import { CiMenuKebab } from "react-icons/ci";
+import ConfirmDelete from './modal/ConfirmDelete';
+import { FaRegTrashAlt } from "react-icons/fa";
+
 
 const Home = () => {
   const [posts, setPosts] = useState([]);
@@ -17,12 +21,49 @@ const Home = () => {
   const { data: session, status } = useSession();
   const [modal, setModal] = useState(false);
   const [liked, setLiked] = useState([]);
+  const [openDropdown, setOpenDropdown] = useState(null);
+  const [confirmModal, setConfirmModal] = useState(null);
   const router = useRouter();
   const [refresh, setRefresh] = useState("");
   const [categories, setCategories] = useState("general");
+  const pathname = usePathname();
+
+  useEffect(() => {
+      if (pathname.includes("#post-")) {
+        const postId = pathname.split("#post-")[1];
+        const postElement = document.getElementById(`post-${postId}`);
+        if (postElement) {
+            postElement.scrollIntoView({ behavior: "smooth", block: "center" });
+        }
+      }
+  }, [pathname, isLoading]);
 
   const toggleModal = () => {
     setModal(!modal);
+  };
+
+  const toggleDropdown = (postId) => {
+    setOpenDropdown((prev) => (prev === postId ? null : postId));
+  };
+
+  const confirmModalFunc = (post_id) => {
+    setConfirmModal(post_id);
+  }
+
+  const deletePost = async (post_id) => {
+    try {
+      const response = await fetch(`/api/data/posts/${post_id}`, {
+        method: 'DELETE',
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to delete post');
+      }
+
+      setPosts((prev) => prev.filter((post) => post.post_id !== post_id));
+    } catch (error) {
+      console.error('Error deleting post:', error);
+    }
   };
 
   const getPosts = async () => {
@@ -104,7 +145,7 @@ const Home = () => {
   }
 
   useEffect(() => {
-    if (!session) {
+    if (status === 'unauthenticated') {
       router.push('/login');
     }
   }, [status, router]);
@@ -132,7 +173,7 @@ const Home = () => {
       let arr = prev.filter(p => p !== post.post_id);
       return arr;
     });
-    
+
     try {
       const response = await fetch(`/api/data/posts/${post.post_id}`, {
         method: 'PUT',
@@ -145,7 +186,7 @@ const Home = () => {
       if (!response.ok) {
         throw new Error('Failed to fetch posts');
       }
-      
+
     } catch (error) {
       console.error('Error sync to database:', error);
     }
@@ -169,7 +210,7 @@ const Home = () => {
       if (!response.ok) {
         throw new Error('Failed to fetch posts');
       }
-      
+
     } catch (error) {
       console.error('Error sync to database:', error);
     }
@@ -212,9 +253,11 @@ const Home = () => {
               </button>
             </div>
             {posts.map((post, id) => (
-              <li key={id} className='shadow-md'>
+              <li key={id} id={`post-${post.post_id}`} className='shadow-md'>
+
                 <div className='flex flex-col gap-1.5'>
-                  <div className='bg-[#9290C3] p-4 shadow-md rounded-md justify-between'>
+
+                  <div className='bg-[#9290C3] shadow-md rounded-md justify-between'>
                     
                     <span
                       className={`pl-2 pr-2 p-1 m-1 ml-0 text-sm rounded-full text-gray-300 bg-[#8381AF]`}
@@ -224,17 +267,43 @@ const Home = () => {
                       {post.category == "game" && (<FaGamepad className="inline mr-1" />)}
                       {post.category}
                     </span>
-                    <p className='mb-2 font-bold text-white mt-2'>{post.post_content}</p>
-                    <p className="ml-1 text-gray-300 font-semibold text-xs">@{post.username}</p>
+                    <div className='flex justify-between'>
+                      <div className='p-4'>
+                        <p className='mb-2 font-bold text-white mt-2'>{post.post_content}</p>
+                        <p className="ml-1 text-gray-300 font-semibold text-xs">@{post.username}</p>
+                      </div>
+                      <div className='text-[#e0e0e0] font-bold mt-2 mr-1 text-[1.25rem]'>
+                        <CiMenuKebab onClick={() => toggleDropdown(post.post_id)}
+                          className='text-white cursor-pointer hover:text-gray-300 hover:scale-110 transition-all duration-150'
+                        />
+                        <div className={`absolute text-xs right-8 mt-2 bg-white shadow-md rounded-md z-10 transition-all duration-200 ease-out transform ${openDropdown === post.post_id ? 'opacity-100 scale-100' : 'opacity-0 scale-95 pointer-events-none'}`}>
+
+                          {post.author_id === session.user.id &&
+                            <button
+                              className='py-1 rounded-md w-full text-left cursor-pointer'
+                            >
+                              {
+                                <div onClick={() => setConfirmModal(post.post_id)} className=' px-4 py-1 hover:bg-gray-200 flex gap-2 text-red-500 justify-center items-center text-center'>
+                                  <FaRegTrashAlt />
+                                  Delete
+                                </div>
+                              }
+                            </button>
+                          }
+
+                        </div>
+                      </div>
+
+                    </div>
                   </div>
                   <div className='flex gap-4'>
 
                     <div className='flex gap-1.5'>
                       <button onClick={() => {
-                        
+
                         if (!liked.includes(post.post_id)) {
                           like(post);
-                        } else { 
+                        } else {
                           unlike(post);
                         }
 
@@ -265,6 +334,10 @@ const Home = () => {
         >
           <PostModal modal={modal} toggleModal={toggleModal} user_id={session.user.id} setRefresh={setRefresh} refresh={refresh}/>
         </div>
+
+        {confirmModal !== null && (
+          <ConfirmDelete post_id={confirmModal} setConfirmModal={confirmModalFunc} deletePost={deletePost} />
+        )}
       </>
       
     )
