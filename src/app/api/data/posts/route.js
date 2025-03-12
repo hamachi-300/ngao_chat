@@ -47,4 +47,3 @@ export async function POST(request) {
       return Response.json({ error: "Failed to connect to database" }, { status: 500 });
     }
 }
-
