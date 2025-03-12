@@ -28,7 +28,7 @@ export default function LoginPage() {
             <div className="w-full max-w-xs">
                 <button
                     onClick={() => signIn('google')}
-                    className="w-full px-4 py-2 text-white bg-red-500 rounded-md hover:bg-red-600 transition"
+                    className="w-full px-4 py-2 text-white bg-red-500 rounded-md hover:bg-red-600 transition cursor-pointer"
                 >
                     Login with Google
                 </button>
