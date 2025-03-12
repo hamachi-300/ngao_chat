@@ -65,7 +65,7 @@ export default function PostModal({ user_id, modal, toggleModal , setRefresh, re
     <>
       <button
         onClick={toggleModal}
-        className="p-4 hover:scale-110 text-3xl bg-blue-600 text-white transition-all duration-250 rounded-full hover:bg-blue-500"
+        className="p-4 hover:scale-110 text-3xl bg-blue-600 text-white transition-all duration-250 rounded-full hover:bg-blue-500 cursor-pointer"
       >
         <AiFillEdit />
       </button>
@@ -102,7 +102,7 @@ export default function PostModal({ user_id, modal, toggleModal , setRefresh, re
               onChange={handlePost}
             ></textarea>
             <button
-              className="w-full py-2 transition-all duration-250 bg-green-600 rounded-md hover:bg-green-500"
+              className="w-full py-2 transition-all duration-250 bg-green-600 rounded-md hover:bg-green-500 cursor-pointer"
               onClick={submitPost}
             >
               Post Now...

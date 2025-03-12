@@ -262,7 +262,7 @@ const Home = () => {
                   <div className='bg-[#9290C3] shadow-md rounded-md justify-between'>
                     
                     <span
-                      className={`pl-2 pr-2 p-1 m-1 ml-0 text-sm rounded-full text-gray-300 bg-[#8381AF]`}
+                      className={`pl-2 pr-2 p-1 mt-2 ml-2 ml-0 text-sm rounded-full text-gray-300 bg-[#8381AF] inline-block`}
                     >
                       {post.category == "general" && (<FaComment className="inline mr-1"/>)}
                       {post.category == "love" && (<FaHeart className="inline mr-1" />)}
@@ -270,7 +270,7 @@ const Home = () => {
                       {post.category}
                     </span>
                     <div className='flex justify-between'>
-                      <div className='p-4'>
+                      <div className='p-4 pt-1'>
                         <p className='mb-2 font-bold text-white mt-2'>{post.post_content}</p>
                         <p className="ml-1 text-gray-300 font-semibold text-xs">@{post.username}</p>
                       </div>
@@ -282,7 +282,7 @@ const Home = () => {
 
                           {post.author_id === session.user.id &&
                             <button
-                              className='py-1 rounded-md w-full text-left cursor-pointer'
+                              className='py-1 rounded-md w-full text-left cursor-pointer '
                             >
                               {
                                 <div onClick={() => setConfirmModal(post.post_id)} className=' px-4 py-1 hover:bg-gray-200 flex gap-2 text-red-500 justify-center items-center text-center'>
