@@ -144,7 +144,7 @@ export default function Page({ }) {
                 return ({
                 ...comment,
                 username: userMap[comment.author_id] || `@${comment.author_id}`
-            })});
+            })}).sort((a, b) => new Date(a.time_stamp) - new Date(b.time_stamp));  // Sort by timestamp (newest first)
 
             setComments(commentsWithUsername);
         } catch (error) {
@@ -201,6 +201,20 @@ export default function Page({ }) {
             }
         }
     };
+
+    // will bug if comment left for month
+    const compareTime = (hour, day) => {
+        let current_day = new Date().getDate();
+        let current_hour = new Date().getHours();
+
+        if (current_day - day > 0){
+            return (current_day - day) + " day";
+        } else if (current_hour - hour > 0){
+            return (current_hour - hour) + " hour";
+        } else {
+            return "recently";
+        }
+    }
 
     async function unlike() {
 
@@ -359,19 +373,19 @@ export default function Page({ }) {
                             {comments.map((comment, id) => (
                                 <li key={id} id={`comment-${comment.comment_id}`} className="shadow-md flex justify-center w-full">
                                     <div className="w-11/12 max-w-[600px] flex flex-col justify-center gap-1.5">
-                                        
                                         <div className='bg-[#9290C3] shadow-md rounded-md flex flex-col justify-between w-full'>
-                                            <div className="flex justify-between">
+                                            <div className="flex justify-between relative">
                                                 <div className="p-4">
                                                     <p className="mb-2 font-bold text-white">{comment.comment_content}</p>
                                                     <p className="ml-1 text-gray-300 font-semibold text-xs">{comment.username}</p>
+                                                    <p className="ml-1 text-gray-300 font-semibold text-xs absolute top-0 right-0 mr-10 pt-3">{compareTime(new Date(comment.time_stamp).getHours(), new Date(comment.time_stamp).getDate())}</p>
                                                 </div>
                                                 <div className='text-[#e0e0e0] font-bold mt-2 mr-1 text-[1.25rem]'>
                                                     <CiMenuKebab onClick={() => toggleDropdown(comment.comment_id)} 
                                                     className='text-white cursor-pointer hover:text-gray-300 hover:scale-110 transition-all duration-150' 
                                                     />
                                                     <div className={`absolute text-xs right-26 mt-2 bg-white shadow-md rounded-md z-10 transition-all duration-200 ease-out transform ${openDropdown === comment.comment_id ? 'opacity-100 scale-100' : 'opacity-0 scale-95 pointer-events-none'}`}>
-                                                        
+
                                                         { comment.author_id === session.user.id &&
                                                         <button 
                                                             className='py-1 rounded-md w-full text-left cursor-pointer'

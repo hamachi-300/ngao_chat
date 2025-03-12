@@ -41,7 +41,8 @@ export async function POST(request) {
             author_id: body.author_id,
             comment_content: body.comment_content,
             like: [],
-            is_cleared: false
+            is_cleared: false,
+            time_stamp: new Date()
         });
         return Response.json({ message: "insert successed", content: body }, { status: 200 });
     } catch (error) {
@@ -49,4 +50,3 @@ export async function POST(request) {
       return Response.json({ error: "Failed to connect to database" }, { status: 500 });
     }
 }
-

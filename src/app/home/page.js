@@ -50,6 +50,19 @@ const Home = () => {
     setConfirmModal(post_id);
   }
 
+  const compareTime = (hour, day) => {
+    let current_day = new Date().getDate();
+    let current_hour = new Date().getHours();
+
+    if (current_day - day > 0){
+        return (current_day - day) + " day";
+    } else if (current_hour - hour > 0){
+        return (current_hour - hour) + " hour";
+    } else {
+        return "recently";
+    }
+}
+
   const deletePost = async (post_id) => {
     try {
       const response = await fetch(`/api/data/posts/${post_id}`, {
@@ -129,11 +142,13 @@ const Home = () => {
       }, {});
 
       // Map the posts with the correct username
-      const postsWithUsername = postsData.map(post => ({
+      const postsWithUsername = postsData
+      .map(post => ({
         ...post,
         username: userMap[post.author_id] || `@${post.author_id}`,
-        commentCount: commentCountMap[post.post_id] || 0
-      }));
+        commentCount: commentCountMap[post.post_id] || 0,
+      }))
+      .sort((a, b) => new Date(b.time_stamp) - new Date(a.time_stamp));  // Sort by timestamp (latest first)
 
       setPosts(postsWithUsername);
     } catch (error) {
@@ -256,10 +271,10 @@ const Home = () => {
             </div>
             {posts.map((post, id) => (
               <li key={id} id={`post-${post.post_id}`} className='shadow-md'>
-
+                {console.log(post.time)}
                 <div className='flex flex-col gap-1.5'>
 
-                  <div className='bg-[#9290C3] shadow-md rounded-md justify-between'>
+                  <div className='bg-[#9290C3] shadow-md rounded-md justify-between relative'>
                     
                     <span
                       className={`pl-2 pr-2 p-1 mt-2 ml-2 ml-0 text-sm rounded-full text-gray-300 bg-[#8381AF] inline-block`}
@@ -273,6 +288,7 @@ const Home = () => {
                       <div className='p-4 pt-1'>
                         <p className='mb-2 font-bold text-white mt-2'>{post.post_content}</p>
                         <p className="ml-1 text-gray-300 font-semibold text-xs">@{post.username}</p>
+                        <p className="ml-1 text-gray-300 font-semibold text-xs absolute top-0 right-0 pr-3 pt-3">{compareTime(new Date(post.time_stamp).getHours(), new Date(post.time_stamp).getDate())}</p>
                       </div>
                       <div className='text-[#e0e0e0] font-bold mt-2 mr-1 text-[1.25rem]'>
                         <CiMenuKebab onClick={() => toggleDropdown(post.post_id)}
