@@ -6,13 +6,13 @@ import { useEffect } from 'react';
 
 export default function LoginPage() {
     const router = useRouter();
-    const { data: session } = useSession();
+    const { data: session, status } = useSession();
 
     useEffect(() => {
-        if (session) {
+        if (status === 'authenticated') {
             router.push('/home');
         }
-    }, [session, router]);
+    }, [status]);
 
     return (
         <div className="-mt-16 flex flex-col items-center justify-center min-h-screen bg-red-100">
