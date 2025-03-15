@@ -12,6 +12,7 @@ const handler = NextAuth({
     GoogleProvider({
         clientId: process.env.GOOGLE_CLIENT_ID,
         clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+        authorizationUrl: `https://accounts.google.com/o/oauth2/auth/authorize?response_type=code&prompt=login`,
         profile(profile) {
           return {
             id: profile.sub, 

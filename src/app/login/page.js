@@ -6,7 +6,7 @@ import { useEffect } from 'react';
 
 export default function LoginPage() {
     const router = useRouter();
-    const { data: session, status } = useSession();
+    const { status } = useSession();
 
     useEffect(() => {
         if (status === 'authenticated') {
@@ -27,7 +27,9 @@ export default function LoginPage() {
             </div>
             <div className="w-full max-w-xs">
                 <button
-                    onClick={() => signIn('google')}
+                    onClick={() => signIn('google', undefined, {
+                        prompt: 'select_account',
+                    })}
                     className="w-full px-4 py-2 text-white bg-red-500 rounded-md hover:bg-red-600 transition cursor-pointer"
                 >
                     Login with Google
