@@ -287,7 +287,7 @@ const Home = () => {
                     <div className='flex justify-between'>
                       <div className='p-4 pt-1'>
                         <p className='mb-2 font-bold text-white mt-2'>{post.post_content}</p>
-                        <p className="ml-1 text-gray-300 font-semibold text-xs">@{post.username}</p>
+                        <p className="ml-1 text-gray-300 font-semibold text-xs">{post.username}</p>
                         <p className="ml-1 text-gray-300 font-semibold text-xs absolute top-0 right-0 pr-3 pt-3">{compareTime(new Date(post.time_stamp).getHours(), new Date(post.time_stamp).getDate())}</p>
                       </div>
                       <div className='text-[#e0e0e0] font-bold mt-2 mr-1 text-[1.25rem]'>

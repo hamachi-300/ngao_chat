@@ -45,7 +45,7 @@ export default function LoginPage() {
             <div className="-mt-16 flex flex-col items-center justify-center min-h-screen bg-[#070F2B]">
                 <div className="flex flex-col items-center mb-8">
                     <Image src="/sadman.png" width={150} height={150} alt='sadman'/>
-                    <h1 className="mt-4 text-3xl font-bold text-gray-800 text-white">Ngao Ngao</h1>
+                    <h1 className="mt-4 text-3xl font-bold text-white">Ngao Ngao</h1>
                 </div>
                 <div className="w-full max-w-xs">
                     <button
