@@ -3,6 +3,7 @@
 import { signIn, useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
+import Image from 'next/image';
 
 export default function LoginPage() {
     const router = useRouter();
@@ -15,25 +16,57 @@ export default function LoginPage() {
     }, [status]);
 
     return (
-        <div className="-mt-16 flex flex-col items-center justify-center min-h-screen bg-red-100">
-            <div className="flex flex-col items-center mb-8">
-                <img
-                    id="logo"
-                    src="https://images-ext-1.discordapp.net/external/Z31aSkayvpvjwB6bFQtkXZ-uI3yDCSQvS4wP5oJkPFs/%3Fstp%3Ddst-jpg_s150x150_tt6%26_nc_ht%3Dinstagram.fbkk29-5.fna.fbcdn.net%26_nc_cat%3D107%26_nc_oc%3DQ6cZ2AH89mLc-56DPbEKd_KBrO4YN720TQ3Pib55TeJb0vIRbLCIWSTJ6VlO6xHs9K4gKis%26_nc_ohc%3DxdfCIk1yMyYQ7kNvgEAnLYQ%26_nc_gid%3Da18e1d3afb3f429fb11c2bb9dede9b8b%26edm%3DALGbJPMBAAAA%26ccb%3D7-5%26oh%3D00_AYGmQDD2l-fd19dcuGfI5FHiylLinehupevQboDCReyp0g%26oe%3D67D0775F%26_nc_sid%3D7d3ac5/https/instagram.fbkk29-5.fna.fbcdn.net/v/t51.2885-19/481962430_2236658440062271_6808717357687971919_n.jpg?format=webp&width=169&height=169"
-                    alt="Logo"
-                    className="w-32 h-32 rounded-full"
-                />
-                <h1 className="mt-4 text-3xl font-bold text-gray-800">Ngao Ngao</h1>
+        <div>
+            <div className='fixed top-0 shadow-white'>
+                <div className="animate-[slide_5s_linear_infinite]">
+                    <Image src="/rain.png" width={100} height={100} alt='sadman'/>
+                </div>
             </div>
-            <div className="w-full max-w-xs">
-                <button
-                    onClick={() => signIn('google', undefined, {
-                        prompt: 'select_account',
-                    })}
-                    className="w-full px-4 py-2 text-white bg-red-500 rounded-md hover:bg-red-600 transition cursor-pointer"
-                >
-                    Login with Google
-                </button>
+            <div className='fixed top-0 left-100 shadow-white'>
+                <div className="animate-[slide_7s_linear_infinite]">
+                    <Image src="/rain.png" width={100} height={100} alt='sadman'/>
+                </div>
+            </div>
+            <div className='fixed top-0 left-200 shadow-white'>
+                <div className="animate-[slide_4s_linear_infinite]">
+                    <Image src="/rain.png" width={100} height={100} alt='sadman'/>
+                </div>
+            </div>
+            <div className='fixed top-0 left-300 shadow-white'>
+                <div className="animate-[slide_6s_linear_infinite]">
+                    <Image src="/rain.png" width={100} height={100} alt='sadman'/>
+                </div>
+            </div>
+            <div className='fixed top-200 left-200 shadow-white'>
+                <div className="animate-[slide_5s_linear_infinite]">
+                    <Image src="/rain-2.png" width={50} height={50} alt='sadman'/>
+                </div>
+            </div>
+            <div className="-mt-16 flex flex-col items-center justify-center min-h-screen bg-[#070F2B]">
+                <div className="flex flex-col items-center mb-8">
+                    <Image src="/sadman.png" width={150} height={150} alt='sadman'/>
+                    <h1 className="mt-4 text-3xl font-bold text-gray-800 text-white">Ngao Ngao</h1>
+                </div>
+                <div className="w-full max-w-xs">
+                    <button
+                        onClick={() => signIn('google', undefined, {
+                            prompt: 'select_account',
+                        })}
+                        className="w-full px-4 py-2 text-white bg-[#9290C3] rounded-md hover:opacity-50 transition cursor-pointer"
+                    >
+                        Login with Google
+                    </button>
+                </div>
+                <style jsx>{`
+                    @keyframes slide {
+                    0% {
+                        transform: translate(0, 0);
+                    }
+                    100% {
+                        transform: translate(1200px, 1200px);
+                    }
+                    }
+                `}</style>    
             </div>
         </div>
     );
